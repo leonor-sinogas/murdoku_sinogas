@@ -1248,6 +1248,16 @@ class _Grid extends StatelessWidget {
               final blocked =
                   level.blocked.contains(index) &&
                   !(object?.occupiable ?? false);
+              final row = index ~/ 6;
+              final column = index % 6;
+              final eliminatedByPlacement =
+                  name == null &&
+                  !blocked &&
+                  placed.values.any(
+                    (cell) =>
+                        cell != null &&
+                        ((cell ~/ 6) == row || (cell % 6) == column),
+                  );
               final topRoom = layout.roomAt(index - 6);
               final leftRoom = index % 6 == 0 ? '' : layout.roomAt(index - 1);
               final rightRoom = index % 6 == 5 ? '' : layout.roomAt(index + 1);
@@ -1316,6 +1326,12 @@ class _Grid extends StatelessWidget {
                                   fontSize: 20,
                                 ),
                               )
+                            : eliminatedByPlacement
+                            ? Icon(
+                                Icons.close_rounded,
+                                color: brickDark.withValues(alpha: .24),
+                                size: 24,
+                              )
                             : object != null
                             ? Tooltip(
                                 message:
@@ -1323,7 +1339,7 @@ class _Grid extends StatelessWidget {
                                 child: Icon(
                                   object.icon,
                                   color: brickDark.withValues(alpha: .8),
-                                  size: 18,
+                                  size: 30,
                                 ),
                               )
                             : blocked
