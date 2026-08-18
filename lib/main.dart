@@ -1051,7 +1051,10 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
       .firstOrNull;
 
   void tapCell(int cell) {
-    if (activeSuspect == null || widget.level.blocked.contains(cell)) return;
+    final object = objectsFor(widget.level)[cell];
+    final blocked =
+        widget.level.blocked.contains(cell) && !(object?.occupiable ?? false);
+    if (activeSuspect == null || blocked) return;
     setState(() {
       final suspect = activeSuspect!;
       if (notesMode) {
@@ -1237,12 +1240,14 @@ class _Grid extends StatelessWidget {
             itemBuilder: (context, index) {
               final layout = layoutFor(level);
               final objects = objectsFor(level);
-              final blocked = level.blocked.contains(index);
               final name = occupantAt(index);
               final cellNotes = notes[index] ?? <String>{};
               final room = layout.roomAt(index);
               final roomLabel = layout.labelAt(index);
               final object = objects[index];
+              final blocked =
+                  level.blocked.contains(index) &&
+                  !(object?.occupiable ?? false);
               final topRoom = layout.roomAt(index - 6);
               final leftRoom = index % 6 == 0 ? '' : layout.roomAt(index - 1);
               final rightRoom = index % 6 == 5 ? '' : layout.roomAt(index + 1);
@@ -1302,7 +1307,16 @@ class _Grid extends StatelessWidget {
                           ),
                         ),
                       Center(
-                        child: object != null
+                        child: name != null
+                            ? Text(
+                                name.substring(0, 1),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w900,
+                                  color: ink,
+                                  fontSize: 20,
+                                ),
+                              )
+                            : object != null
                             ? Tooltip(
                                 message:
                                     '${object.name} — ${object.occupiable ? 'can be occupied' : 'cannot be occupied'}',
@@ -1317,15 +1331,6 @@ class _Grid extends StatelessWidget {
                                 Icons.close_rounded,
                                 color: mauve,
                                 size: 17,
-                              )
-                            : name != null
-                            ? Text(
-                                name.substring(0, 1),
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w900,
-                                  color: ink,
-                                  fontSize: 20,
-                                ),
                               )
                             : Padding(
                                 padding: const EdgeInsets.all(3),
