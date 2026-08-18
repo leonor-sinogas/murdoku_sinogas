@@ -28,6 +28,8 @@ Every case board is divided into four named rooms. Thick borders mark room bound
 
 Object cells are not valid official placements or candidate-note cells. Room and object layouts are currently local case data and will become server-delivered level metadata in the backend phase.
 
+Object relationships are room-scoped: a clue such as “beside a plant” or “in front of a window” only applies when the person and the referenced object are inside the same named room. A nearby object across a thick room boundary does not satisfy the clue.
+
 ## Data model in the MVP
 
 Each level in `lib/main.dart` has:

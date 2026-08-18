@@ -462,7 +462,7 @@ class _RulesContent extends StatelessWidget {
           number: '1',
           title: 'Read the clues',
           body:
-              'All clues are shown together in every case. Look for room names, objects, directions, and whether a person is seated.',
+              'All clues are shown together in every case. Look for room names, objects, directions, and whether a person is seated. Object relationships only count when the person and object are in the same room.',
         ),
         const _RuleStep(
           number: '2',
@@ -1436,7 +1436,7 @@ class _Grid extends StatelessWidget {
                       : constraints.maxWidth / 2 + 6;
                   final top = firstCell ~/ level.gridSize < level.gridSize / 2
                       ? -26.0
-                      : constraints.maxHeight / 2 + 5;
+                      : constraints.maxHeight + 5;
                   return Positioned(
                     left: left,
                     top: top,
