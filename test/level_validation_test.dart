@@ -1,0 +1,68 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:murdoku/main.dart';
+
+void main() {
+  test('every case solution satisfies the board rules', () {
+    for (final level in levels) {
+      final layout = layoutFor(level);
+      final objects = objectsFor(level);
+      final solutionCells = level.solution.values.toList();
+      final rows = solutionCells.map((cell) => cell ~/ level.gridSize).toSet();
+      final columns = solutionCells
+          .map((cell) => cell % level.gridSize)
+          .toSet();
+      final boardCellCount = level.gridSize * level.gridSize;
+
+      expect(
+        level.solution.keys.length,
+        level.suspects.length,
+        reason: level.name,
+      );
+      expect(
+        level.suspects.every(level.solution.containsKey),
+        isTrue,
+        reason: level.name,
+      );
+      expect(
+        solutionCells.toSet().length,
+        solutionCells.length,
+        reason: '${level.name}: duplicate cells',
+      );
+      expect(
+        rows.length,
+        solutionCells.length,
+        reason: '${level.name}: duplicate rows',
+      );
+      expect(
+        columns.length,
+        solutionCells.length,
+        reason: '${level.name}: duplicate columns',
+      );
+      expect(
+        solutionCells.every((cell) => cell >= 0 && cell < boardCellCount),
+        isTrue,
+        reason: '${level.name}: out-of-grid cell',
+      );
+      expect(
+        solutionCells.every((cell) {
+          final object = objects[cell];
+          return !level.blocked.contains(cell) || object?.occupiable == true;
+        }),
+        isTrue,
+        reason: '${level.name}: solution uses a blocked cell',
+      );
+
+      final allRoomCells = layout.rooms.values.expand((cells) => cells).toSet();
+      expect(
+        layout.rooms.values.every((cells) => cells.isNotEmpty),
+        isTrue,
+        reason: '${level.name}: empty room',
+      );
+      expect(
+        allRoomCells.length,
+        boardCellCount,
+        reason: '${level.name}: rooms do not cover the board',
+      );
+    }
+  });
+}

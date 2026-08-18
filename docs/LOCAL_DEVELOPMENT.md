@@ -28,5 +28,6 @@ The current widget tests verify:
 
 - The home screen renders all 10 case files.
 - Starting the first case opens the interactive grid and case panel.
+- Every case solution uses unique rows and columns, valid grid cells, and complete room coverage.
 
 Add tests for note toggling, official placement replacement, blocked cells, and solution checking as gameplay state grows.

@@ -22,8 +22,8 @@ The **Rules** button on the home screen opens a full-screen rules page. While a 
 
 Every case board is divided into four named rooms. Thick borders mark room boundaries, and each room name is shown on its board. The board guide explains object behavior:
 
-- Chairs and beds are occupiable cells.
-- Tables, plants, windows, televisions, bookshelves, statues, boxes, and fireplaces are blocked cells.
+- Chairs, beds, and windows are occupiable cells.
+- Tables, plants, televisions, bookshelves, statues, boxes, and fireplaces are blocked cells.
 - Hovering an object on web shows whether it can be occupied.
 
 Object cells are not valid official placements or candidate-note cells. Room and object layouts are currently local case data and will become server-delivered level metadata in the backend phase.

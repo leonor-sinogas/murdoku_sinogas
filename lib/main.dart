@@ -42,6 +42,7 @@ class Level {
     required this.clues,
     required this.solution,
     required this.blocked,
+    this.gridSize = 6,
   });
 
   final int number;
@@ -53,11 +54,13 @@ class Level {
   final List<String> clues;
   final Map<String, int> solution;
   final Set<int> blocked;
+  final int gridSize;
 }
 
 const levels = <Level>[
   Level(
     number: 1,
+    gridSize: 9,
     name: 'The All-Day Conference',
     tagline: 'Six hours of presentations. One very bad ending.',
     location: 'Office',
@@ -83,16 +86,16 @@ const levels = <Level>[
       'Eduardo was not sitting and was not in the bathroom.',
     ],
     solution: {
-      'Andre': 1,
-      'Bethany': 8,
-      'Clyde': 4,
-      'Delilah': 20,
-      'Eduardo': 28,
-      'Felicia': 32,
-      'Greg': 19,
-      'Helena': 18,
+      'Andre': 0,
+      'Bethany': 10,
+      'Clyde': 20,
+      'Delilah': 30,
+      'Eduardo': 40,
+      'Felicia': 50,
+      'Greg': 60,
+      'Helena': 70,
     },
-    blocked: {0, 5, 7, 12, 14, 21, 25, 26, 30, 33},
+    blocked: {4, 13, 22, 31, 39, 49, 58, 67, 76, 79},
   ),
   Level(
     number: 2,
@@ -109,7 +112,7 @@ const levels = <Level>[
       'Evan was beside a bed.',
       'The victim was in the last available cell.',
     ],
-    solution: {'Arianna': 31, 'Brycen': 7, 'Colleen': 14, 'Dan': 5, 'Evan': 23},
+    solution: {'Arianna': 1, 'Brycen': 6, 'Colleen': 14, 'Dan': 22, 'Evan': 27},
     blocked: {0, 3, 9, 12, 16, 19, 21, 26, 28, 34},
   ),
   Level(
@@ -127,11 +130,12 @@ const levels = <Level>[
       'Evelyn was beside a television.',
       'The victim was in the last available cell.',
     ],
-    solution: {'Aaron': 21, 'Bruno': 8, 'Clara': 3, 'Donna': 31, 'Evelyn': 28},
+    solution: {'Aaron': 0, 'Bruno': 7, 'Clara': 14, 'Donna': 21, 'Evelyn': 28},
     blocked: {1, 4, 6, 11, 13, 16, 22, 25, 30, 35},
   ),
   Level(
     number: 4,
+    gridSize: 7,
     name: 'The Laboratory',
     tagline: 'Safety goggles can only protect you so much.',
     location: 'Research lab',
@@ -156,12 +160,12 @@ const levels = <Level>[
     ],
     solution: {
       'Ashton': 1,
-      'Blaine': 17,
-      'Carla': 5,
-      'Delilah': 30,
-      'Estella': 8,
-      'Frank': 26,
-      'Galen': 20,
+      'Blaine': 7,
+      'Carla': 16,
+      'Delilah': 24,
+      'Estella': 32,
+      'Frank': 40,
+      'Galen': 48,
     },
     blocked: {0, 4, 6, 11, 15, 18, 22, 24, 29, 33},
   ),
@@ -182,12 +186,12 @@ const levels = <Level>[
       'The victim was in the final available cell.',
     ],
     solution: {
-      'Iris': 5,
-      'Jonah': 19,
-      'Kendall': 2,
-      'Luca': 27,
-      'Mina': 14,
-      'Nico': 9,
+      'Iris': 1,
+      'Jonah': 6,
+      'Kendall': 14,
+      'Luca': 21,
+      'Mina': 29,
+      'Nico': 34,
     },
     blocked: {0, 3, 8, 12, 16, 22, 24, 30, 31, 35},
   ),
@@ -208,12 +212,12 @@ const levels = <Level>[
       'The victim was in the last available cell.',
     ],
     solution: {
-      'Avery': 6,
-      'Beck': 15,
-      'Cora': 26,
-      'Dylan': 3,
-      'Mae': 20,
-      'Silas': 31,
+      'Avery': 0,
+      'Beck': 7,
+      'Cora': 14,
+      'Dylan': 22,
+      'Mae': 27,
+      'Silas': 35,
     },
     blocked: {1, 4, 9, 11, 17, 21, 24, 28, 32, 34},
   ),
@@ -234,12 +238,12 @@ const levels = <Level>[
       'The victim was in the final available cell.',
     ],
     solution: {
-      'Ayla': 4,
-      'Bram': 2,
-      'Cleo': 23,
-      'Jasper': 18,
+      'Ayla': 1,
+      'Bram': 6,
+      'Cleo': 14,
+      'Jasper': 21,
       'Nora': 29,
-      'Otto': 28,
+      'Otto': 34,
     },
     blocked: {0, 7, 10, 13, 16, 22, 25, 30, 33, 35},
   ),
@@ -260,12 +264,12 @@ const levels = <Level>[
       'The victim was in the final available cell.',
     ],
     solution: {
-      'June': 25,
-      'Kira': 5,
-      'Miles': 12,
-      'Reese': 3,
-      'Sana': 18,
-      'Toby': 31,
+      'June': 0,
+      'Kira': 7,
+      'Miles': 14,
+      'Reese': 21,
+      'Sana': 28,
+      'Toby': 35,
     },
     blocked: {1, 4, 8, 11, 15, 19, 22, 27, 30, 34},
   ),
@@ -286,12 +290,12 @@ const levels = <Level>[
       'The victim was in the final available cell.',
     ],
     solution: {
-      'Ari': 8,
-      'Cade': 4,
-      'Esme': 13,
-      'Finn': 27,
-      'Greer': 2,
-      'Hugo': 10,
+      'Ari': 1,
+      'Cade': 6,
+      'Esme': 15,
+      'Finn': 23,
+      'Greer': 26,
+      'Hugo': 34,
     },
     blocked: {0, 6, 9, 14, 17, 20, 25, 29, 32, 35},
   ),
@@ -312,12 +316,12 @@ const levels = <Level>[
       'The victim was in the final available cell.',
     ],
     solution: {
-      'Ada': 2,
-      'Bo': 25,
+      'Ada': 0,
+      'Bo': 7,
       'Cass': 14,
-      'Drew': 20,
-      'Elle': 7,
-      'Fox': 31,
+      'Drew': 21,
+      'Elle': 28,
+      'Fox': 35,
     },
     blocked: {0, 4, 9, 11, 16, 18, 23, 27, 30, 34},
   ),
@@ -499,7 +503,7 @@ class _RulesContent extends StatelessWidget {
               ),
               const SizedBox(height: 7),
               const Text(
-                'Only chairs and beds can be occupied. Every other object cell is blocked and cannot receive an official placement or note.',
+                'Chairs, beds, and windows can be occupied. Every other object cell is blocked and cannot receive an official placement or note.',
                 style: TextStyle(color: ink, height: 1.35),
               ),
               const SizedBox(height: 14),
@@ -933,19 +937,19 @@ class RoomLayout {
   }
 }
 
-Set<int> _rect(int top, int bottom, int left, int right) => {
+Set<int> _rect(int top, int bottom, int left, int right, [int size = 6]) => {
   for (var row = top; row <= bottom; row++)
-    for (var col = left; col <= right; col++) row * 6 + col,
+    for (var col = left; col <= right; col++) row * size + col,
 };
 
 RoomLayout layoutFor(Level level) {
   switch (level.number) {
     case 1:
       return RoomLayout({
-        'Break Room': _rect(0, 2, 0, 2),
-        "Director's Office": _rect(0, 2, 3, 5),
-        'Bathroom': _rect(3, 5, 0, 2),
-        'Meeting Room': _rect(3, 5, 3, 5),
+        'Break Room': _rect(0, 3, 0, 3, 9),
+        "Director's Office": _rect(0, 3, 4, 8, 9),
+        'Bathroom': _rect(4, 8, 0, 3, 9),
+        'Meeting Room': _rect(4, 8, 4, 8, 9),
       });
     case 2:
       return RoomLayout({
@@ -963,10 +967,10 @@ RoomLayout layoutFor(Level level) {
       });
     case 4:
       return RoomLayout({
-        'Experiments': _rect(0, 2, 0, 2),
-        'Archive': _rect(0, 2, 3, 5),
-        'Data Analysis': _rect(3, 5, 0, 2),
-        'Freezer': _rect(3, 5, 3, 5),
+        'Experiments': _rect(0, 2, 0, 2, 7),
+        'Archive': _rect(0, 2, 3, 6, 7),
+        'Data Analysis': _rect(3, 6, 0, 2, 7),
+        'Freezer': _rect(3, 6, 3, 6, 7),
       });
     case 5:
       return RoomLayout({
@@ -1019,7 +1023,7 @@ Map<int, BoardObject> objectsFor(Level level) {
     BoardObject('Bed', Icons.bed, occupiable: true),
     BoardObject('Table', Icons.table_restaurant, occupiable: false),
     BoardObject('Plant', Icons.local_florist, occupiable: false),
-    BoardObject('Window', Icons.window, occupiable: false),
+    BoardObject('Window', Icons.window, occupiable: true),
     BoardObject('Television', Icons.tv, occupiable: false),
     BoardObject('Bookshelf', Icons.menu_book, occupiable: false),
     BoardObject('Statue', Icons.auto_awesome, occupiable: false),
@@ -1044,7 +1048,14 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
   void initState() {
     super.initState();
     placed = {for (final name in widget.level.suspects) name: null};
-    notes = {for (var cell = 0; cell < 36; cell++) cell: <String>{}};
+    notes = {
+      for (
+        var cell = 0;
+        cell < widget.level.gridSize * widget.level.gridSize;
+        cell++
+      )
+        cell: <String>{},
+    };
   }
 
   String? occupantAt(int cell) => placed.entries
@@ -1252,11 +1263,10 @@ class _Grid extends StatelessWidget {
                   ),
                   child: GridView.builder(
                     physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 6,
-                        ),
-                    itemCount: 36,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: level.gridSize,
+                    ),
+                    itemCount: level.gridSize * level.gridSize,
                     itemBuilder: (context, index) {
                       final objects = objectsFor(level);
                       final name = occupantAt(index);
@@ -1266,24 +1276,26 @@ class _Grid extends StatelessWidget {
                       final blocked =
                           level.blocked.contains(index) &&
                           !(object?.occupiable ?? false);
-                      final row = index ~/ 6;
-                      final column = index % 6;
+                      final row = index ~/ level.gridSize;
+                      final column = index % level.gridSize;
                       final eliminatedByPlacement =
                           name == null &&
                           !blocked &&
                           placed.values.any(
                             (cell) =>
                                 cell != null &&
-                                ((cell ~/ 6) == row || (cell % 6) == column),
+                                ((cell ~/ level.gridSize) == row ||
+                                    (cell % level.gridSize) == column),
                           );
-                      final topRoom = layout.roomAt(index - 6);
-                      final leftRoom = index % 6 == 0
+                      final topRoom = layout.roomAt(index - level.gridSize);
+                      final leftRoom = index % level.gridSize == 0
                           ? ''
                           : layout.roomAt(index - 1);
-                      final rightRoom = index % 6 == 5
+                      final rightRoom =
+                          index % level.gridSize == level.gridSize - 1
                           ? ''
                           : layout.roomAt(index + 1);
-                      final bottomRoom = layout.roomAt(index + 6);
+                      final bottomRoom = layout.roomAt(index + level.gridSize);
                       final border = Border(
                         top: BorderSide(
                           color: topRoom == room ? mauve : brickDark,
@@ -1330,7 +1342,8 @@ class _Grid extends StatelessWidget {
                                           fontSize: 20,
                                         ),
                                       )
-                                    : object != null
+                                    : object != null &&
+                                          (!object.occupiable || !notesMode)
                                     ? Tooltip(
                                         message:
                                             '${object.name} — ${object.occupiable ? 'can be occupied' : 'cannot be occupied'}',
@@ -1350,39 +1363,50 @@ class _Grid extends StatelessWidget {
                                       )
                                     : Padding(
                                         padding: const EdgeInsets.all(3),
-                                        child: GridView.builder(
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          padding: EdgeInsets.zero,
-                                          gridDelegate:
-                                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                                crossAxisCount: 3,
+                                        child: Column(
+                                          children: List.generate(
+                                            3,
+                                            (row) => Expanded(
+                                              child: Row(
+                                                children: List.generate(3, (
+                                                  column,
+                                                ) {
+                                                  final noteIndex =
+                                                      row * 3 + column;
+                                                  final candidate =
+                                                      noteIndex <
+                                                          level.suspects.length
+                                                      ? level
+                                                            .suspects[noteIndex]
+                                                      : null;
+                                                  return Expanded(
+                                                    child: Center(
+                                                      child: Text(
+                                                        candidate != null &&
+                                                                cellNotes
+                                                                    .contains(
+                                                                      candidate,
+                                                                    )
+                                                            ? candidate
+                                                                  .substring(
+                                                                    0,
+                                                                    1,
+                                                                  )
+                                                                  .toUpperCase()
+                                                            : '',
+                                                        style: const TextStyle(
+                                                          color: brickDark,
+                                                          fontSize: 9,
+                                                          fontWeight:
+                                                              FontWeight.w900,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                }),
                                               ),
-                                          itemCount: 9,
-                                          itemBuilder: (context, noteIndex) {
-                                            final candidate =
-                                                noteIndex <
-                                                    level.suspects.length
-                                                ? level.suspects[noteIndex]
-                                                : null;
-                                            return Center(
-                                              child: Text(
-                                                candidate != null &&
-                                                        cellNotes.contains(
-                                                          candidate,
-                                                        )
-                                                    ? candidate
-                                                          .substring(0, 1)
-                                                          .toUpperCase()
-                                                    : '',
-                                                style: const TextStyle(
-                                                  color: brickDark,
-                                                  fontSize: 9,
-                                                  fontWeight: FontWeight.w900,
-                                                ),
-                                              ),
-                                            );
-                                          },
+                                            ),
+                                          ),
                                         ),
                                       ),
                               ),
@@ -1407,10 +1431,10 @@ class _Grid extends StatelessWidget {
                 ),
                 ...layout.rooms.entries.map((entry) {
                   final firstCell = entry.value.reduce((a, b) => a < b ? a : b);
-                  final left = firstCell % 6 < 3
+                  final left = firstCell % level.gridSize < level.gridSize / 2
                       ? 6.0
                       : constraints.maxWidth / 2 + 6;
-                  final top = firstCell ~/ 6 < 3
+                  final top = firstCell ~/ level.gridSize < level.gridSize / 2
                       ? -26.0
                       : constraints.maxHeight / 2 + 5;
                   return Positioned(
