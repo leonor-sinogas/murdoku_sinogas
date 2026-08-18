@@ -16,9 +16,9 @@ void main() {
     await tester.tap(find.text('Start case 01'));
     await tester.pumpAndSettle();
 
-    expect(find.text('The All-Day Conference'), findsOneWidget);
+    expect(find.text('Vacation House'), findsOneWidget);
     expect(find.text('SUSPECTS'), findsOneWidget);
-    expect(find.text('Andre'), findsOneWidget);
+    expect(find.text('Arianna'), findsOneWidget);
     expect(find.text('CHECK SOLUTION'), findsOneWidget);
   });
 }

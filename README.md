@@ -10,7 +10,10 @@ This repository currently contains the local-first Flutter MVP:
 - Official suspect placement mode.
 - Sudoku-style candidate-note mode with fixed 3×3 note slots and uppercase initials.
 - All clues visible together in the case panel.
+- Named room divisions with thick room borders and room labels on each board.
+- Object cells for chairs, beds, tables, plants, windows, televisions, bookshelves, statues, boxes, and fireplaces, with an occupancy legend.
 - Local solution checking.
+- Rules available from the home screen and from the info button beside an open case title.
 - Search/magnifying-glass browser favicon using the Murdoku palette.
 
 The requested FastAPI backend, authentication, PostgreSQL service, AWS infrastructure, persistent accounts, and production deployment are documented as the next architecture phase but are not implemented or deployed yet.
