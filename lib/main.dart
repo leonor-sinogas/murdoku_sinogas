@@ -1056,8 +1056,19 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
     final object = objectsFor(widget.level)[cell];
     final blocked =
         widget.level.blocked.contains(cell) && !(object?.occupiable ?? false);
-    if (activeSuspect == null || blocked) return;
+    final occupant = occupantAt(cell);
+    if (blocked) return;
     setState(() {
+      if (!notesMode &&
+          occupant != null &&
+          (activeSuspect == null || occupant == activeSuspect)) {
+        placed[occupant] = null;
+        notes[cell]!.clear();
+        activeSuspect = null;
+        checked = false;
+        return;
+      }
+      if (activeSuspect == null) return;
       final suspect = activeSuspect!;
       if (notesMode) {
         if (occupantAt(cell) != null) return;
@@ -1301,7 +1312,7 @@ class _Grid extends StatelessWidget {
                                 ? const Color(0xFFE1E4E5)
                                 : name != null
                                 ? coral
-                                : activeSuspect != null
+                                : notesMode && activeSuspect != null
                                 ? const Color(0xFFF1E2E4)
                                 : paper,
                             borderRadius: BorderRadius.zero,
@@ -1435,7 +1446,7 @@ class _Grid extends StatelessWidget {
           Expanded(
             child: Text(
               activeSuspect == null
-                  ? 'Select a suspect, then choose a cell.'
+                  ? 'Select a suspect, then choose a cell. Tap a placed suspect to remove it.'
                   : notesMode
                   ? 'Tap cells to add or remove a candidate note for $activeSuspect.'
                   : 'Tap an open cell to place $activeSuspect.',
@@ -1488,6 +1499,17 @@ class _Clues extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final guideObjects = objectsFor(level).values.toSet().toList();
+    final sortedClues = [...level.clues]
+      ..sort((a, b) {
+        int suspectOrder(String clue) {
+          final index = level.suspects.indexWhere(
+            (name) => clue.toLowerCase().startsWith(name.toLowerCase()),
+          );
+          return index == -1 ? level.suspects.length : index;
+        }
+
+        return suspectOrder(a).compareTo(suspectOrder(b));
+      });
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1642,7 +1664,7 @@ class _Clues extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 10),
-        ...level.clues.asMap().entries.map(
+        ...sortedClues.asMap().entries.map(
           (entry) => Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: Container(
