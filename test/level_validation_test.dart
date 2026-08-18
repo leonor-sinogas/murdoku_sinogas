@@ -15,6 +15,14 @@ void main() {
       final boardCellCount = level.gridSize * level.gridSize;
 
       for (final entry in objects.entries) {
+        final roomName = layout.roomAt(entry.key).toLowerCase();
+        if (entry.value.name == 'Bed') {
+          expect(
+            roomName.contains('bedroom'),
+            isTrue,
+            reason: '${level.name}: bed outside a bedroom',
+          );
+        }
         if (entry.value.name == 'Window') {
           final row = entry.key ~/ level.gridSize;
           final column = entry.key % level.gridSize;

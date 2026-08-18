@@ -112,8 +112,8 @@ const levels = <Level>[
       'Evan was beside a bed.',
       'The victim was in the last available cell.',
     ],
-    solution: {'Arianna': 1, 'Brycen': 6, 'Colleen': 14, 'Dan': 22, 'Evan': 27},
-    blocked: {0, 3, 9, 12, 16, 19, 21, 26, 28, 34},
+    solution: {'Arianna': 5, 'Brycen': 6, 'Colleen': 15, 'Dan': 19, 'Evan': 28},
+    blocked: {0, 3, 9, 12, 16, 19, 25, 26, 28, 34},
   ),
   Level(
     number: 3,
@@ -960,10 +960,10 @@ RoomLayout layoutFor(Level level) {
       });
     case 3:
       return RoomLayout({
-        'Study': _rect(0, 2, 0, 2),
+        'Main Bedroom': _rect(0, 2, 0, 2),
         'Office': _rect(0, 2, 3, 5),
         'Bathroom': _rect(3, 5, 0, 2),
-        'Lounge': _rect(3, 5, 3, 5),
+        'Living Room': _rect(3, 5, 3, 5),
       });
     case 4:
       return RoomLayout({
@@ -996,7 +996,7 @@ RoomLayout layoutFor(Level level) {
     case 8:
       return RoomLayout({
         'Lobby': _rect(0, 2, 0, 2),
-        'Guest Room': _rect(0, 2, 3, 5),
+        'Guest Bedroom': _rect(0, 2, 3, 5),
         'Bathroom': _rect(3, 5, 0, 2),
         'Lounge': _rect(3, 5, 3, 5),
       });
@@ -1068,25 +1068,73 @@ Map<int, BoardObject> objectsFor(Level level) {
   ];
   final cells = level.blocked.toList()..sort();
   final size = level.gridSize;
+  final layout = layoutFor(level);
   bool isOutsideWall(int cell) {
     final row = cell ~/ size;
     final column = cell % size;
     return row == 0 || column == 0 || row == size - 1 || column == size - 1;
   }
 
-  final result = <int, BoardObject>{
-    for (var index = 0; index < cells.length; index++)
-      cells[index]: () {
-        final candidate = objects[(index + level.number) % objects.length];
-        if (candidate.name != 'Window' || isOutsideWall(cells[index])) {
-          return candidate;
-        }
-        return objects.firstWhere((object) => object.name != 'Window');
-      }(),
-  };
+  bool roomAllowsObject(String room, String object) {
+    final name = room.toLowerCase();
+    switch (object) {
+      case 'Bed':
+        return name.contains('bedroom') || name.contains('bedrooms');
+      case 'Television':
+        return name.contains('living') ||
+            name.contains('lounge') ||
+            name.contains('break') ||
+            name.contains('office');
+      case 'Bookshelf':
+        return name.contains('office') ||
+            name.contains('study') ||
+            name.contains('archive') ||
+            name.contains('records') ||
+            name.contains('library');
+      case 'Statue':
+        return name.contains('gallery') ||
+            name.contains('sculpture') ||
+            name.contains('lobby');
+      case 'Box':
+        return name.contains('storage') ||
+            name.contains('freezer') ||
+            name.contains('archive') ||
+            name.contains('records');
+      case 'Table':
+        return !name.contains('bathroom');
+      case 'Plant':
+        return !name.contains('bathroom') && !name.contains('freezer');
+      case 'Fireplace':
+        return name.contains('lounge') ||
+            name.contains('living') ||
+            name.contains('lodge') ||
+            name.contains('bedroom');
+      default:
+        return true;
+    }
+  }
+
+  final solutionCells = level.solution.values.toSet();
+  final result = <int, BoardObject>{};
+  for (var index = 0; index < cells.length; index++) {
+    final cell = cells[index];
+    final room = layout.roomAt(cell);
+    final eligible = objects
+        .where(
+          (object) =>
+              roomAllowsObject(room, object.name) &&
+              (object.name != 'Window' || isOutsideWall(cell)),
+        )
+        .toList();
+    final placementEligible = solutionCells.contains(cell)
+        ? eligible.where((object) => object.occupiable).toList()
+        : eligible;
+    final choices = placementEligible.isEmpty ? eligible : placementEligible;
+    result[cell] = choices[(index + level.number) % choices.length];
+  }
   if (level.number == 2) {
-    result[21] = objects.firstWhere((object) => object.name == 'Plant');
-    result[22] = objects.firstWhere((object) => object.name == 'Bed');
+    result[19] = objects.firstWhere((object) => object.name == 'Bed');
+    result[25] = objects.firstWhere((object) => object.name == 'Plant');
   }
   return result;
 }
