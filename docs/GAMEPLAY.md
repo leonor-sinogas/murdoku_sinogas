@@ -2,32 +2,34 @@
 
 ## Goal
 
-Each case contains a grid divided into rooms or areas, a victim, and a group of suspects. A person occupies one available cell. The player uses the clues to determine every suspect’s location. The murderer is the suspect who shares a division with the victim.
+Each case contains a grid divided into rooms or areas, a victim, and a group of suspects. Every character, including the victim, occupies one available cell. The player uses the clues to determine every character’s location. The murderer is the suspect who shares a room with the victim.
 
 The home screen orders the current cases from easier to more involved and assigns visible case numbers sequentially: Vacation House, Study Session, The Last Train, Hotel Check-In, Mountain Lodge, Gallery Opening, Late Night Shift, Boardroom B-12, The Laboratory, and The All-Day Conference.
 
-The **Rules** button on the home screen opens a full-screen rules page. While a case is open, the information icon beside the case title opens the same rules in a review dialog without leaving the puzzle.
+The **Rules** button on the home screen opens a full-screen rules page. While a case is open, the information icon in the bottom-left help footer opens the same rules in a review dialog without leaving the puzzle.
 
 ## Player interaction
 
 1. Choose a case from the home page.
-2. Select a suspect chip.
+2. Select a character chip. The victim is included in the character list and must also be placed.
 3. Choose an input mode:
    - **Place person**: tap an open cell to make the suspect’s official placement. A cell can contain only one official occupant.
    - **Add notes**: tap a cell to toggle that suspect as a candidate.
 4. Candidate notes use fixed Sudoku-style slots. The first suspect is always in slot 1, the second in slot 2, and so on. Empty slots remain empty; notes never shift around.
-5. Tap **Check solution** after placing every suspect.
+5. Select the suspect you think is the murderer.
+6. Tap **Check solution** after placing every character. The result checks both the board and the accusation; an incorrect accusation reveals the correct murderer.
 
 ## Board objects and rooms
 
 Every case board is divided into four named rooms. Thick borders mark room boundaries, and each room name is shown on its board. The board guide explains object behavior:
 
-- Chairs, beds, and windows are occupiable cells. Windows only appear next to
+- Chairs, beds, and windows are occupiable cells. Their cells can receive an
+  official character placement or candidate notes. Windows only appear next to
   an outside wall of the board.
-- Tables, plants, televisions, bookshelves, statues, boxes, and fireplaces are blocked cells.
+- Tables, plants, televisions, bookshelves, statues, boxes, and fireplaces are blocked cells and cannot receive a character or note.
 - Hovering an object on web shows whether it can be occupied.
 
-Object cells are not valid official placements or candidate-note cells. Room and object layouts are currently local case data and will become server-delivered level metadata in the backend phase.
+Room and object layouts are currently local case data and will become server-delivered level metadata in the backend phase.
 
 Object relationships are room-scoped: a clue such as “beside a plant” or “in front of a window” only applies when the person and the referenced object are inside the same named room. A nearby object across a thick room boundary does not satisfy the clue.
 
@@ -49,10 +51,14 @@ Each level in `lib/main.dart` has:
 - `number`, `name`, `tagline`, and `location` for presentation.
 - `victim` and an ordered `suspects` list.
 - `clues`, shown together in the case panel.
-- `solution`, mapping each suspect to a grid cell index.
+- `solution`, mapping each suspect to a grid cell index. `solutionFor` derives the victim’s required cell from the remaining valid board cells.
 - `blocked`, the cells that cannot be occupied.
 
-The current solution checker is intentionally local and deterministic. It validates whether every suspect has been placed in the supplied solution cell; it does not yet derive solutions from a general-purpose constraint engine.
+The current solution checker is intentionally local and deterministic. It validates every character, compass direction, window boundary, and seated/lying object relationship against the supplied case data; it does not yet derive solutions from a general-purpose constraint engine.
+
+When a character is placed officially, all notes for that character are removed
+from the board. Removing an official placement does not remove other characters’
+notes.
 
 ## Planned gameplay improvements
 

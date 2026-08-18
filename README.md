@@ -8,12 +8,13 @@ This repository currently contains the local-first Flutter MVP:
 - English puzzle content based on the supplied logic-grid references.
 - Responsive Flutter UI for web, macOS, and iOS targets.
 - Official suspect placement mode.
+- Victim placement as a required character, followed by murderer selection and answer checking.
 - Sudoku-style candidate-note mode with fixed 3×3 note slots and uppercase initials.
 - All clues visible together in the case panel.
 - Named room divisions with thick room borders and room labels on each board.
 - Object cells for chairs, beds, tables, plants, windows, televisions, bookshelves, statues, boxes, and fireplaces, with an occupancy legend.
-- Local solution checking.
-- Rules available from the home screen and from the info button beside an open case title.
+- Local solution checking, including the murderer reveal after an incorrect accusation.
+- Rules available from the home screen and from the info button in the bottom-left footer of an open case.
 - Search/magnifying-glass browser favicon using the Murdoku palette.
 
 The requested FastAPI backend, authentication, PostgreSQL service, AWS infrastructure, persistent accounts, and production deployment are documented as the next architecture phase but are not implemented or deployed yet.
@@ -46,6 +47,7 @@ The app is intentionally local-only at this stage. No command in the normal loca
 ```text
 lib/main.dart          Flutter app, level data, gameplay UI, placement and notes state
 test/widget_test.dart  Home and case-opening smoke tests
+test/level_validation_test.dart  Board, compass, window, and object-clue regression tests
 web/index.html         Web metadata and favicon reference
 web/favicon.svg        Murdoku magnifying-glass favicon
 docs/                  Product, gameplay, and target architecture documentation
@@ -60,6 +62,8 @@ flutter analyze
 flutter test
 flutter build web --release
 ```
+
+The release build is written to `build/web`; it is not deployed automatically.
 
 ## Target production architecture
 

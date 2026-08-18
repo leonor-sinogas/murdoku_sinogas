@@ -29,5 +29,11 @@ The current widget tests verify:
 - The home screen renders all 10 case files.
 - Starting the first case opens the interactive grid and case panel.
 - Every case solution uses unique rows and columns, valid grid cells, and complete room coverage.
+- Windows are on outside-wall cells.
+- East/west/north/south clues agree with the board compass.
+- Combined chair/bed and beside-object clues use adjacent cells in the same room.
 
-Add tests for note toggling, official placement replacement, blocked cells, and solution checking as gameplay state grows.
+The permanent tests live in `test/level_validation_test.dart` and
+`test/widget_test.dart`. Add tests for note toggling, official placement
+replacement, blocked cells, victim placement, murderer checking, and solution
+checking as gameplay state grows.
