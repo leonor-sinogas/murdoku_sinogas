@@ -43,6 +43,14 @@ void main() {
         reason: level.name,
       );
       expect(answer.keys, contains(level.victim), reason: level.name);
+      final victimRoom = layout.roomAt(answer[level.victim]!);
+      expect(
+        level.suspects.any(
+          (suspect) => layout.roomAt(answer[suspect]!) == victimRoom,
+        ),
+        isTrue,
+        reason: '${level.name}: victim is alone in a room',
+      );
       expect(
         objectCluesMatch(level, answer),
         isTrue,

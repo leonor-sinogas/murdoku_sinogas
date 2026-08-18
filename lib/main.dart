@@ -1025,6 +1025,7 @@ Map<String, int> solutionFor(Level level) {
   final usedColumns = solution.values
       .map((cell) => cell % level.gridSize)
       .toSet();
+  final layout = layoutFor(level);
   final objects = objectsFor(level);
   final available = <int>[];
   for (var cell = 0; cell < level.gridSize * level.gridSize; cell++) {
@@ -1033,11 +1034,19 @@ Map<String, int> solutionFor(Level level) {
       available.add(cell);
     }
   }
+  final suspectRooms = solution.values
+      .map(layout.roomAt)
+      .where((room) => room.isNotEmpty)
+      .toSet();
   final victimCell = available.reversed.firstWhere(
     (cell) =>
+        suspectRooms.contains(layout.roomAt(cell)) &&
         !usedRows.contains(cell ~/ level.gridSize) &&
         !usedColumns.contains(cell % level.gridSize),
-    orElse: () => available.last,
+    orElse: () => available.reversed.firstWhere(
+      (cell) => suspectRooms.contains(layout.roomAt(cell)),
+      orElse: () => available.last,
+    ),
   );
   solution[level.victim] = victimCell;
   return solution;
@@ -1254,8 +1263,21 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
 
   void check() {
     final complete = placed.values.every((value) => value != null);
+    final victimCell = placed[widget.level.victim];
+    final victimRoom = victimCell == null
+        ? ''
+        : layoutFor(widget.level).roomAt(victimCell);
+    final victimHasRoommate =
+        victimCell != null &&
+        placed.entries.any(
+          (entry) =>
+              entry.key != widget.level.victim &&
+              entry.value != null &&
+              layoutFor(widget.level).roomAt(entry.value!) == victimRoom,
+        );
     final correct =
         complete &&
+        victimHasRoommate &&
         objectCluesMatch(widget.level, answer) &&
         placed.entries.every((entry) => answer[entry.key] == entry.value);
     final murderer = murdererFor(widget.level, answer);
@@ -1269,6 +1291,8 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
               ? 'Case solved'
               : complete && !murdererCorrect
               ? 'Murderer not identified'
+              : complete && !victimHasRoommate
+              ? 'Victim cannot be alone'
               : complete
               ? 'Not quite'
               : 'Keep investigating',
@@ -1278,6 +1302,8 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
               ? 'Excellent deduction. ${widget.level.victim} was not alone.'
               : complete && !murdererCorrect
               ? 'The murderer was $murderer. Revisit the room containing the victim.'
+              : complete && !victimHasRoommate
+              ? 'The victim must share a room with at least one suspect.'
               : complete
               ? 'One or more suspects are in the wrong cell. Re-read the clues and try again.'
               : 'Place every character, including the victim, and choose who you think is the murderer.',

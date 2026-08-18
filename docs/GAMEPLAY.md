@@ -2,7 +2,7 @@
 
 ## Goal
 
-Each case contains a grid divided into rooms or areas, a victim, and a group of suspects. Every character, including the victim, occupies one available cell. The player uses the clues to determine every character’s location. The murderer is the suspect who shares a room with the victim.
+Each case contains a grid divided into rooms or areas, a victim, and a group of suspects. Every character, including the victim, occupies one available cell. The player uses the clues to determine every character’s location. The victim must share a room with at least one suspect; that suspect is the murderer.
 
 The home screen orders the current cases from easier to more involved and assigns visible case numbers sequentially: Vacation House, Study Session, The Last Train, Hotel Check-In, Mountain Lodge, Gallery Opening, Late Night Shift, Boardroom B-12, The Laboratory, and The All-Day Conference.
 
