@@ -17,8 +17,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Vacation House'), findsOneWidget);
-    expect(find.text('SUSPECTS'), findsOneWidget);
-    expect(find.text('Arianna'), findsOneWidget);
+    expect(find.text('CHARACTERS'), findsOneWidget);
+    expect(find.text('Arianna'), findsWidgets);
     expect(find.text('CHECK SOLUTION'), findsOneWidget);
   });
 }

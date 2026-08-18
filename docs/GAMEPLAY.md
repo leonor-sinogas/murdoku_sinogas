@@ -22,13 +22,25 @@ The **Rules** button on the home screen opens a full-screen rules page. While a 
 
 Every case board is divided into four named rooms. Thick borders mark room boundaries, and each room name is shown on its board. The board guide explains object behavior:
 
-- Chairs, beds, and windows are occupiable cells.
+- Chairs, beds, and windows are occupiable cells. Windows only appear next to
+  an outside wall of the board.
 - Tables, plants, televisions, bookshelves, statues, boxes, and fireplaces are blocked cells.
 - Hovering an object on web shows whether it can be occupied.
 
 Object cells are not valid official placements or candidate-note cells. Room and object layouts are currently local case data and will become server-delivered level metadata in the backend phase.
 
 Object relationships are room-scoped: a clue such as “beside a plant” or “in front of a window” only applies when the person and the referenced object are inside the same named room. A nearby object across a thick room boundary does not satisfy the clue.
+
+Directional clues use the board compass: east means a larger column number,
+west means a smaller column number, north means a smaller row number, and
+south means a larger row number. These comparisons are based on the board
+coordinates, while “beside” and “in front of” remain local neighboring/object
+relationships within the same room.
+
+If a clue says a character is beside an object and seated or lying in a chair
+or bed, the occupied chair/bed and referenced object must be adjacent cells in
+the same room. A character cannot satisfy both parts when those objects are
+separated or across a room boundary.
 
 ## Data model in the MVP
 

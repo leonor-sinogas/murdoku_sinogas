@@ -6,6 +6,7 @@ void main() {
     for (final level in levels) {
       final layout = layoutFor(level);
       final objects = objectsFor(level);
+      final answer = solutionFor(level);
       final solutionCells = level.solution.values.toList();
       final rows = solutionCells.map((cell) => cell ~/ level.gridSize).toSet();
       final columns = solutionCells
@@ -13,11 +14,60 @@ void main() {
           .toSet();
       final boardCellCount = level.gridSize * level.gridSize;
 
+      for (final entry in objects.entries) {
+        if (entry.value.name == 'Window') {
+          final row = entry.key ~/ level.gridSize;
+          final column = entry.key % level.gridSize;
+          expect(
+            row == 0 ||
+                column == 0 ||
+                row == level.gridSize - 1 ||
+                column == level.gridSize - 1,
+            isTrue,
+            reason: '${level.name}: window is not next to an outside wall',
+          );
+        }
+      }
+
       expect(
         level.solution.keys.length,
         level.suspects.length,
         reason: level.name,
       );
+      expect(answer.keys, contains(level.victim), reason: level.name);
+      expect(
+        objectCluesMatch(level, answer),
+        isTrue,
+        reason: '${level.name}: invalid seated object relationship',
+      );
+
+      final directionalClue = RegExp(
+        r'^(\w+) was (east|west|north|south) of (\w+)\.',
+        caseSensitive: false,
+      );
+      for (final clue in level.clues) {
+        final match = directionalClue.firstMatch(clue);
+        if (match == null) continue;
+        final first = answer[match.group(1)!];
+        final second = answer[match.group(3)!];
+        expect(first, isNotNull, reason: '${level.name}: $clue');
+        expect(second, isNotNull, reason: '${level.name}: $clue');
+        final firstRow = first! ~/ level.gridSize;
+        final firstColumn = first % level.gridSize;
+        final secondRow = second! ~/ level.gridSize;
+        final secondColumn = second % level.gridSize;
+        final direction = match.group(2)!.toLowerCase();
+        expect(
+          switch (direction) {
+            'east' => firstColumn > secondColumn,
+            'west' => firstColumn < secondColumn,
+            'north' => firstRow < secondRow,
+            _ => firstRow > secondRow,
+          },
+          isTrue,
+          reason: '${level.name}: $clue',
+        );
+      }
       expect(
         level.suspects.every(level.solution.containsKey),
         isTrue,

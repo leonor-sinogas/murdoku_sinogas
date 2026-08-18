@@ -182,7 +182,7 @@ const levels = <Level>[
       'Kendall was in front of a window.',
       'Luca was beside a television.',
       'Mina was alone in the archive.',
-      'Nico was north of Luca.',
+      'Nico was south of Luca.',
       'The victim was in the final available cell.',
     ],
     solution: {
@@ -205,7 +205,7 @@ const levels = <Level>[
     clues: [
       'Avery was beside a statue.',
       'Beck was seated.',
-      'Cora was south of Dylan.',
+      'Cora was north of Dylan.',
       'Dylan was in front of a window.',
       'Mae was beside a plant.',
       'Silas was not in the main hall.',
@@ -271,7 +271,7 @@ const levels = <Level>[
       'Sana': 28,
       'Toby': 35,
     },
-    blocked: {1, 4, 8, 11, 15, 19, 22, 27, 30, 34},
+    blocked: {1, 4, 8, 11, 15, 19, 21, 22, 27, 30, 34},
   ),
   Level(
     number: 9,
@@ -543,7 +543,7 @@ class _RulesContent extends StatelessWidget {
                     object: const BoardObject(
                       'Window',
                       Icons.window,
-                      occupiable: false,
+                      occupiable: true,
                     ),
                   ),
                   _ObjectLegendItem(
@@ -1017,6 +1017,42 @@ RoomLayout layoutFor(Level level) {
   }
 }
 
+Map<String, int> solutionFor(Level level) {
+  final solution = Map<String, int>.from(level.solution);
+  final usedRows = solution.values
+      .map((cell) => cell ~/ level.gridSize)
+      .toSet();
+  final usedColumns = solution.values
+      .map((cell) => cell % level.gridSize)
+      .toSet();
+  final objects = objectsFor(level);
+  final available = <int>[];
+  for (var cell = 0; cell < level.gridSize * level.gridSize; cell++) {
+    final object = objects[cell];
+    if (!level.blocked.contains(cell) || object?.occupiable == true) {
+      available.add(cell);
+    }
+  }
+  final victimCell = available.reversed.firstWhere(
+    (cell) =>
+        !usedRows.contains(cell ~/ level.gridSize) &&
+        !usedColumns.contains(cell % level.gridSize),
+    orElse: () => available.last,
+  );
+  solution[level.victim] = victimCell;
+  return solution;
+}
+
+String? murdererFor(Level level, Map<String, int> solution) {
+  final victimRoom = layoutFor(level).roomAt(solution[level.victim]!);
+  for (final suspect in level.suspects) {
+    if (layoutFor(level).roomAt(solution[suspect]!) == victimRoom) {
+      return suspect;
+    }
+  }
+  return null;
+}
+
 Map<int, BoardObject> objectsFor(Level level) {
   const objects = [
     BoardObject('Chair', Icons.weekend, occupiable: true),
@@ -1031,23 +1067,85 @@ Map<int, BoardObject> objectsFor(Level level) {
     BoardObject('Fireplace', Icons.local_fire_department, occupiable: false),
   ];
   final cells = level.blocked.toList()..sort();
-  return {
+  final size = level.gridSize;
+  bool isOutsideWall(int cell) {
+    final row = cell ~/ size;
+    final column = cell % size;
+    return row == 0 || column == 0 || row == size - 1 || column == size - 1;
+  }
+
+  final result = <int, BoardObject>{
     for (var index = 0; index < cells.length; index++)
-      cells[index]: objects[(index + level.number) % objects.length],
+      cells[index]: () {
+        final candidate = objects[(index + level.number) % objects.length];
+        if (candidate.name != 'Window' || isOutsideWall(cells[index])) {
+          return candidate;
+        }
+        return objects.firstWhere((object) => object.name != 'Window');
+      }(),
   };
+  if (level.number == 2) {
+    result[21] = objects.firstWhere((object) => object.name == 'Plant');
+    result[22] = objects.firstWhere((object) => object.name == 'Bed');
+  }
+  return result;
+}
+
+bool _cellsAreAdjacent(int first, int second, int size) {
+  final firstRow = first ~/ size;
+  final firstColumn = first % size;
+  final secondRow = second ~/ size;
+  final secondColumn = second % size;
+  return (firstRow - secondRow).abs() + (firstColumn - secondColumn).abs() == 1;
+}
+
+bool objectCluesMatch(Level level, Map<String, int> solution) {
+  final objects = objectsFor(level);
+  final layout = layoutFor(level);
+  for (final clue in level.clues) {
+    final match = RegExp(
+      r'^(\w+) was beside an? (\w+) and was in an? (chair|bed)\.',
+      caseSensitive: false,
+    ).firstMatch(clue);
+    if (match == null) continue;
+    final personCell = solution[match.group(1)!];
+    final objectName = match.group(2)!.toLowerCase();
+    final seatName = match.group(3)!.toLowerCase();
+    if (personCell == null) return false;
+    BoardObject? seatObject;
+    int? referencedCell;
+    for (final entry in objects.entries) {
+      if (entry.key == personCell &&
+          entry.value.name.toLowerCase() == seatName) {
+        seatObject = entry.value;
+      }
+      if (entry.value.name.toLowerCase() == objectName) {
+        referencedCell = entry.key;
+      }
+    }
+    if (seatObject == null || referencedCell == null) return false;
+    if (layout.roomAt(personCell) != layout.roomAt(referencedCell) ||
+        !_cellsAreAdjacent(personCell, referencedCell, level.gridSize)) {
+      return false;
+    }
+  }
+  return true;
 }
 
 class _PuzzleScreenState extends State<PuzzleScreen> {
   late final Map<String, int?> placed;
+  late final Map<String, int> answer;
   late final Map<int, Set<String>> notes;
   String? activeSuspect;
+  String? selectedMurderer;
   bool notesMode = false;
   bool checked = false;
 
   @override
   void initState() {
     super.initState();
-    placed = {for (final name in widget.level.suspects) name: null};
+    answer = solutionFor(widget.level);
+    placed = {for (final name in answer.keys) name: null};
     notes = {
       for (
         var cell = 0;
@@ -1097,6 +1195,9 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
         }
         placed[suspect] = cell;
         notes[cell]!.clear();
+        for (final noteSet in notes.values) {
+          noteSet.remove(suspect);
+        }
         activeSuspect = null;
       }
       checked = false;
@@ -1107,26 +1208,31 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
     final complete = placed.values.every((value) => value != null);
     final correct =
         complete &&
-        placed.entries.every(
-          (entry) => widget.level.solution[entry.key] == entry.value,
-        );
+        objectCluesMatch(widget.level, answer) &&
+        placed.entries.every((entry) => answer[entry.key] == entry.value);
+    final murderer = murdererFor(widget.level, answer);
+    final murdererCorrect = selectedMurderer == murderer;
     setState(() => checked = true);
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         title: Text(
-          correct
+          correct && murdererCorrect
               ? 'Case solved'
+              : complete && !murdererCorrect
+              ? 'Murderer not identified'
               : complete
               ? 'Not quite'
               : 'Keep investigating',
         ),
         content: Text(
-          correct
+          correct && murdererCorrect
               ? 'Excellent deduction. ${widget.level.victim} was not alone.'
+              : complete && !murdererCorrect
+              ? 'The murderer was $murderer. Revisit the room containing the victim.'
               : complete
               ? 'One or more suspects are in the wrong cell. Re-read the clues and try again.'
-              : 'Place every suspect on the grid before checking your solution.',
+              : 'Place every character, including the victim, and choose who you think is the murderer.',
         ),
         actions: [
           TextButton(
@@ -1150,60 +1256,96 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text('CASE ${widget.caseNumber.toString().padLeft(2, '0')}'),
-          IconButton(
-            onPressed: () => showRulesDialog(context),
-            tooltip: 'Game rules',
-            icon: const Icon(Icons.info_outline_rounded, size: 20),
-          ),
         ],
       ),
       actions: [
         TextButton(onPressed: check, child: const Text('CHECK SOLUTION')),
       ],
     ),
-    body: Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 1180),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final wide = constraints.maxWidth > 820;
-            final grid = _Grid(
-              level: widget.level,
-              placed: placed,
-              occupantAt: occupantAt,
-              activeSuspect: activeSuspect,
-              onCellTap: tapCell,
-              notes: notes,
-              notesMode: notesMode,
-            );
-            final clues = _Clues(
-              level: widget.level,
-              placed: placed,
-              activeSuspect: activeSuspect,
-              onSuspectTap: (name) => setState(() => activeSuspect = name),
-              notesMode: notesMode,
-              onModeChanged: (value) => setState(() => notesMode = value),
-            );
-            return Padding(
-              padding: const EdgeInsets.all(28),
-              child: wide
-                  ? Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(flex: 5, child: grid),
-                        const SizedBox(width: 30),
-                        Expanded(flex: 4, child: clues),
-                      ],
-                    )
-                  : SingleChildScrollView(
-                      child: Column(
-                        children: [grid, const SizedBox(height: 30), clues],
-                      ),
-                    ),
-            );
-          },
+    body: Column(
+      children: [
+        Expanded(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 1180),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final wide = constraints.maxWidth > 820;
+                  final grid = _Grid(
+                    level: widget.level,
+                    placed: placed,
+                    occupantAt: occupantAt,
+                    activeSuspect: activeSuspect,
+                    onCellTap: tapCell,
+                    notes: notes,
+                    notesMode: notesMode,
+                  );
+                  final clues = _Clues(
+                    level: widget.level,
+                    placed: placed,
+                    activeSuspect: activeSuspect,
+                    onSuspectTap: (name) =>
+                        setState(() => activeSuspect = name),
+                    notesMode: notesMode,
+                    onModeChanged: (value) => setState(() => notesMode = value),
+                    selectedMurderer: selectedMurderer,
+                    onMurdererChanged: (name) =>
+                        setState(() => selectedMurderer = name),
+                  );
+                  return Padding(
+                    padding: const EdgeInsets.all(28),
+                    child: wide
+                        ? Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(flex: 5, child: grid),
+                              const SizedBox(width: 30),
+                              Expanded(flex: 4, child: clues),
+                            ],
+                          )
+                        : SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                grid,
+                                const SizedBox(height: 30),
+                                clues,
+                              ],
+                            ),
+                          ),
+                  );
+                },
+              ),
+            ),
+          ),
         ),
-      ),
+        SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, 12),
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: () => showRulesDialog(context),
+                  tooltip: 'Game rules',
+                  icon: const Icon(Icons.info_outline_rounded),
+                  color: brickDark,
+                ),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: Text(
+                    activeSuspect == null
+                        ? 'Select a suspect, then choose a cell. Tap a placed suspect to remove it.'
+                        : notesMode
+                        ? 'Tap cells to add or remove a candidate note for $activeSuspect.'
+                        : 'Tap an open cell to place $activeSuspect.',
+                    style: const TextStyle(color: ink),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     ),
   );
 }
@@ -1462,23 +1604,6 @@ class _Grid extends StatelessWidget {
           },
         ),
       ),
-      const SizedBox(height: 12),
-      Row(
-        children: [
-          const Icon(Icons.info_outline_rounded, size: 17, color: mauve),
-          const SizedBox(width: 7),
-          Expanded(
-            child: Text(
-              activeSuspect == null
-                  ? 'Select a suspect, then choose a cell. Tap a placed suspect to remove it.'
-                  : notesMode
-                  ? 'Tap cells to add or remove a candidate note for $activeSuspect.'
-                  : 'Tap an open cell to place $activeSuspect.',
-              style: const TextStyle(color: ink),
-            ),
-          ),
-        ],
-      ),
     ],
   );
 }
@@ -1513,6 +1638,8 @@ class _Clues extends StatelessWidget {
     required this.onSuspectTap,
     required this.notesMode,
     required this.onModeChanged,
+    required this.selectedMurderer,
+    required this.onMurdererChanged,
   });
   final Level level;
   final Map<String, int?> placed;
@@ -1520,6 +1647,8 @@ class _Clues extends StatelessWidget {
   final ValueChanged<String> onSuspectTap;
   final bool notesMode;
   final ValueChanged<bool> onModeChanged;
+  final String? selectedMurderer;
+  final ValueChanged<String> onMurdererChanged;
   @override
   Widget build(BuildContext context) {
     final guideObjects = objectsFor(level).values.toSet().toList();
@@ -1606,7 +1735,7 @@ class _Clues extends StatelessWidget {
         ),
         const SizedBox(height: 18),
         Text(
-          'SUSPECTS',
+          'CHARACTERS',
           style: Theme.of(context).textTheme.labelLarge?.copyWith(
             fontWeight: FontWeight.w900,
             letterSpacing: 1.5,
@@ -1617,7 +1746,7 @@ class _Clues extends StatelessWidget {
         Wrap(
           spacing: 8,
           runSpacing: 8,
-          children: level.suspects
+          children: [...level.suspects, level.victim]
               .map(
                 (name) => ChoiceChip(
                   label: Text(name),
@@ -1626,6 +1755,32 @@ class _Clues extends StatelessWidget {
                   avatar: placed[name] != null
                       ? const Icon(Icons.check, size: 15)
                       : null,
+                  selectedColor: coral,
+                  backgroundColor: Colors.white,
+                  side: const BorderSide(color: mauve),
+                ),
+              )
+              .toList(),
+        ),
+        const SizedBox(height: 18),
+        Text(
+          'WHO IS THE MURDERER?',
+          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+            fontWeight: FontWeight.w900,
+            letterSpacing: 1.4,
+            color: ink,
+          ),
+        ),
+        const SizedBox(height: 9),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: level.suspects
+              .map(
+                (name) => ChoiceChip(
+                  label: Text(name),
+                  selected: selectedMurderer == name,
+                  onSelected: (_) => onMurdererChanged(name),
                   selectedColor: coral,
                   backgroundColor: Colors.white,
                   side: const BorderSide(color: mauve),
