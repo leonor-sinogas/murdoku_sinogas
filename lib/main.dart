@@ -1300,7 +1300,16 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
                             children: [
                               Expanded(flex: 5, child: grid),
                               const SizedBox(width: 30),
-                              Expanded(flex: 4, child: clues),
+                              Expanded(
+                                flex: 4,
+                                child: Scrollbar(
+                                  thumbVisibility: true,
+                                  child: SingleChildScrollView(
+                                    padding: const EdgeInsets.only(right: 10),
+                                    child: clues,
+                                  ),
+                                ),
+                              ),
                             ],
                           )
                         : SingleChildScrollView(
