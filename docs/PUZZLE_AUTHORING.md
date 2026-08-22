@@ -1,6 +1,6 @@
 # Puzzle authoring reference
 
-This document records the conventions used by the ten local MVP cases.
+This document records the conventions used by the thirty local MVP cases.
 
 ## Coordinates
 
@@ -55,6 +55,11 @@ nearby object across a thick border does not satisfy the clue.
   current board.
 
 ## Adding a case
+
+The current second set contains twenty additional six-by-six cases numbered
+11 through 30. They use four named three-by-three rooms, five suspects, and a
+victim derived from the final valid cell. Their room names and themes vary,
+but the same coordinate, object, and deduction rules apply.
 
 When adding or changing a case:
 

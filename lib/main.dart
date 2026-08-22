@@ -325,10 +325,409 @@ const levels = <Level>[
     },
     blocked: {0, 4, 9, 11, 16, 18, 23, 27, 30, 34},
   ),
+  Level(
+    number: 11,
+    name: 'The Museum After Dark',
+    tagline: 'The exhibits were silent. The witnesses were not.',
+    location: 'Museum',
+    victim: 'Fiona',
+    suspects: ['Aiden', 'Beatrice', 'Cole', 'Delia', 'Emery'],
+    clues: [
+      'Aiden was in the first row and first column.',
+      'Beatrice was in the second row and second column.',
+      'Cole was south of Beatrice.',
+      'Delia was in the fourth row and fourth column.',
+      'Emery was east of Cole.',
+      'The victim was in the final available cell.',
+    ],
+    solution: {'Aiden': 0, 'Beatrice': 7, 'Cole': 14, 'Delia': 21, 'Emery': 28},
+    blocked: {1, 4, 8, 10, 13, 16, 18, 23, 26, 31},
+  ),
+  Level(
+    number: 12,
+    name: 'The Sleeper Car',
+    tagline: 'Someone boarded the train. Someone never got off.',
+    location: 'Night train',
+    victim: 'Juno',
+    suspects: ['Briar', 'Callum', 'Daphne', 'Elias', 'Freya'],
+    clues: [
+      'Briar was in the first row and first column.',
+      'Callum was in the second row and second column.',
+      'Daphne was south of Callum.',
+      'Elias was in the fourth row and fourth column.',
+      'Freya was east of Daphne.',
+      'The victim was in the final available cell.',
+    ],
+    solution: {'Briar': 0, 'Callum': 7, 'Daphne': 14, 'Elias': 21, 'Freya': 28},
+    blocked: {2, 5, 8, 11, 13, 17, 19, 24, 30, 33},
+  ),
+  Level(
+    number: 13,
+    name: 'The County Courthouse',
+    tagline: 'The verdict was still out when the lights went off.',
+    location: 'Courthouse',
+    victim: 'Gideon',
+    suspects: ['Avery', 'Bruno', 'Clara', 'Dorian', 'Elise'],
+    clues: [
+      'Avery was in the first row and first column.',
+      'Bruno was in the second row and second column.',
+      'Clara was south of Bruno.',
+      'Dorian was in the fourth row and fourth column.',
+      'Elise was east of Clara.',
+      'The victim was in the final available cell.',
+    ],
+    solution: {'Avery': 0, 'Bruno': 7, 'Clara': 14, 'Dorian': 21, 'Elise': 28},
+    blocked: {1, 3, 9, 12, 16, 18, 22, 25, 29, 34},
+  ),
+  Level(
+    number: 14,
+    name: 'The Garden Party',
+    tagline: 'The invitations were elegant. The alibis were not.',
+    location: 'Estate',
+    victim: 'Harper',
+    suspects: ['Amelia', 'Bennett', 'Celia', 'Davis', 'Evelyn'],
+    clues: [
+      'Amelia was in the first row and first column.',
+      'Bennett was in the second row and second column.',
+      'Celia was south of Bennett.',
+      'Davis was in the fourth row and fourth column.',
+      'Evelyn was east of Celia.',
+      'The victim was in the final available cell.',
+    ],
+    solution: {
+      'Amelia': 0,
+      'Bennett': 7,
+      'Celia': 14,
+      'Davis': 21,
+      'Evelyn': 28,
+    },
+    blocked: {2, 4, 8, 10, 15, 17, 20, 24, 27, 32},
+  ),
+  Level(
+    number: 15,
+    name: 'The Night Clinic',
+    tagline: 'The waiting room was empty. The mystery was not.',
+    location: 'Clinic',
+    victim: 'Iris',
+    suspects: ['Archer', 'Bianca', 'Carter', 'Demi', 'Evan'],
+    clues: [
+      'Archer was in the first row and first column.',
+      'Bianca was in the second row and second column.',
+      'Carter was south of Bianca.',
+      'Demi was in the fourth row and fourth column.',
+      'Evan was east of Carter.',
+      'The victim was in the final available cell.',
+    ],
+    solution: {'Archer': 0, 'Bianca': 7, 'Carter': 14, 'Demi': 21, 'Evan': 28},
+    blocked: {1, 5, 9, 11, 16, 19, 23, 26, 30, 34},
+  ),
+  Level(
+    number: 16,
+    name: 'The Recording Studio',
+    tagline: 'The final track had one voice too many.',
+    location: 'Studio',
+    victim: 'Nora',
+    suspects: ['Ari', 'Blake', 'Carmen', 'Devon', 'Etta'],
+    clues: [
+      'Ari was in the first row and first column.',
+      'Blake was in the second row and second column.',
+      'Carmen was south of Blake.',
+      'Devon was in the fourth row and fourth column.',
+      'Etta was east of Carmen.',
+      'The victim was in the final available cell.',
+    ],
+    solution: {'Ari': 0, 'Blake': 7, 'Carmen': 14, 'Devon': 21, 'Etta': 28},
+    blocked: {2, 3, 8, 12, 15, 18, 22, 25, 29, 33},
+  ),
+  Level(
+    number: 17,
+    name: 'The Harbor Ferry',
+    tagline: 'The tide came in. The truth came out.',
+    location: 'Ferry',
+    victim: 'Milo',
+    suspects: ['Ada', 'Beck', 'Cleo', 'Drew', 'Faye'],
+    clues: [
+      'Ada was in the first row and first column.',
+      'Beck was in the second row and second column.',
+      'Cleo was south of Beck.',
+      'Drew was in the fourth row and fourth column.',
+      'Faye was east of Cleo.',
+      'The victim was in the final available cell.',
+    ],
+    solution: {'Ada': 0, 'Beck': 7, 'Cleo': 14, 'Drew': 21, 'Faye': 28},
+    blocked: {1, 4, 9, 13, 16, 20, 23, 27, 31, 34},
+  ),
+  Level(
+    number: 18,
+    name: 'The Boarding School',
+    tagline: 'The bell rang once. Then the halls went quiet.',
+    location: 'School',
+    victim: 'Greta',
+    suspects: ['Alina', 'Boris', 'Chloe', 'Derek', 'Elsa'],
+    clues: [
+      'Alina was in the first row and first column.',
+      'Boris was in the second row and second column.',
+      'Chloe was south of Boris.',
+      'Derek was in the fourth row and fourth column.',
+      'Elsa was east of Chloe.',
+      'The victim was in the final available cell.',
+    ],
+    solution: {'Alina': 0, 'Boris': 7, 'Chloe': 14, 'Derek': 21, 'Elsa': 28},
+    blocked: {2, 5, 8, 11, 17, 19, 24, 26, 30, 32},
+  ),
+  Level(
+    number: 19,
+    name: 'The Grand Theater',
+    tagline: 'The curtain rose on a scene nobody rehearsed.',
+    location: 'Theater',
+    victim: 'Holly',
+    suspects: ['Anton', 'Bella', 'Cyrus', 'Dahlia', 'Enzo'],
+    clues: [
+      'Anton was in the first row and first column.',
+      'Bella was in the second row and second column.',
+      'Cyrus was south of Bella.',
+      'Dahlia was in the fourth row and fourth column.',
+      'Enzo was east of Cyrus.',
+      'The victim was in the final available cell.',
+    ],
+    solution: {'Anton': 0, 'Bella': 7, 'Cyrus': 14, 'Dahlia': 21, 'Enzo': 28},
+    blocked: {1, 3, 10, 12, 15, 18, 22, 27, 29, 33},
+  ),
+  Level(
+    number: 20,
+    name: 'The Research Annex',
+    tagline: 'The experiment ended. The questions multiplied.',
+    location: 'Research center',
+    victim: 'Ivo',
+    suspects: ['Anya', 'Brent', 'Cleo', 'Damon', 'Esme'],
+    clues: [
+      'Anya was in the first row and first column.',
+      'Brent was in the second row and second column.',
+      'Cleo was south of Brent.',
+      'Damon was in the fourth row and fourth column.',
+      'Esme was east of Cleo.',
+      'The victim was in the final available cell.',
+    ],
+    solution: {'Anya': 0, 'Brent': 7, 'Cleo': 14, 'Damon': 21, 'Esme': 28},
+    blocked: {2, 4, 8, 13, 16, 19, 23, 25, 31, 34},
+  ),
+  Level(
+    number: 21,
+    name: 'The Lakeside Cottage',
+    tagline: 'The view was peaceful. The weekend was not.',
+    location: 'Cottage',
+    victim: 'June',
+    suspects: ['Avery', 'Brooke', 'Casey', 'Dylan', 'Emilia'],
+    clues: [
+      'Avery was in the first row and first column.',
+      'Brooke was in the second row and second column.',
+      'Casey was south of Brooke.',
+      'Dylan was in the fourth row and fourth column.',
+      'Emilia was east of Casey.',
+      'The victim was in the final available cell.',
+    ],
+    solution: {'Avery': 0, 'Brooke': 7, 'Casey': 14, 'Dylan': 21, 'Emilia': 28},
+    blocked: {1, 5, 9, 11, 17, 20, 24, 26, 30, 32},
+  ),
+  Level(
+    number: 22,
+    name: 'The Executive Retreat',
+    tagline: 'The presentation was polished. The murder was not.',
+    location: 'Retreat center',
+    victim: 'Rowan',
+    suspects: ['Alec', 'Bria', 'Cora', 'Dean', 'Elena'],
+    clues: [
+      'Alec was in the first row and first column.',
+      'Bria was in the second row and second column.',
+      'Cora was south of Bria.',
+      'Dean was in the fourth row and fourth column.',
+      'Elena was east of Cora.',
+      'The victim was in the final available cell.',
+    ],
+    solution: {'Alec': 0, 'Bria': 7, 'Cora': 14, 'Dean': 21, 'Elena': 28},
+    blocked: {2, 3, 8, 12, 15, 18, 22, 27, 29, 33},
+  ),
+  Level(
+    number: 23,
+    name: 'The Bakery Before Dawn',
+    tagline: 'The ovens were warm. The back door was open.',
+    location: 'Bakery',
+    victim: 'Pia',
+    suspects: ['Abel', 'Bridget', 'Celia', 'Dario', 'Eve'],
+    clues: [
+      'Abel was in the first row and first column.',
+      'Bridget was in the second row and second column.',
+      'Celia was south of Bridget.',
+      'Dario was in the fourth row and fourth column.',
+      'Eve was east of Celia.',
+      'The victim was in the final available cell.',
+    ],
+    solution: {'Abel': 0, 'Bridget': 7, 'Celia': 14, 'Dario': 21, 'Eve': 28},
+    blocked: {1, 4, 9, 13, 16, 19, 23, 25, 31, 34},
+  ),
+  Level(
+    number: 24,
+    name: 'The Penthouse Party',
+    tagline: 'The skyline glittered while the secrets surfaced.',
+    location: 'Penthouse',
+    victim: 'Sloane',
+    suspects: ['Arden', 'Blair', 'Cleo', 'Dante', 'Elle'],
+    clues: [
+      'Arden was in the first row and first column.',
+      'Blair was in the second row and second column.',
+      'Cleo was south of Blair.',
+      'Dante was in the fourth row and fourth column.',
+      'Elle was east of Cleo.',
+      'The victim was in the final available cell.',
+    ],
+    solution: {'Arden': 0, 'Blair': 7, 'Cleo': 14, 'Dante': 21, 'Elle': 28},
+    blocked: {2, 5, 10, 12, 17, 20, 24, 26, 30, 32},
+  ),
+  Level(
+    number: 25,
+    name: 'The Natural History Wing',
+    tagline: 'The fossils were ancient. The motive was fresh.',
+    location: 'Museum',
+    victim: 'Mara',
+    suspects: ['Asha', 'Bruno', 'Celia', 'Drew', 'Esther'],
+    clues: [
+      'Asha was in the first row and first column.',
+      'Bruno was in the second row and second column.',
+      'Celia was south of Bruno.',
+      'Drew was in the fourth row and fourth column.',
+      'Esther was east of Celia.',
+      'The victim was in the final available cell.',
+    ],
+    solution: {'Asha': 0, 'Bruno': 7, 'Celia': 14, 'Drew': 21, 'Esther': 28},
+    blocked: {1, 3, 8, 11, 15, 18, 22, 27, 29, 33},
+  ),
+  Level(
+    number: 26,
+    name: 'The Harvest Supper',
+    tagline: 'Everyone came for dinner. Not everyone left.',
+    location: 'Farmhouse',
+    victim: 'Nell',
+    suspects: ['Ada', 'Bea', 'Clara', 'Della', 'Eli'],
+    clues: [
+      'Ada was in the first row and first column.',
+      'Bea was in the second row and second column.',
+      'Clara was south of Bea.',
+      'Della was in the fourth row and fourth column.',
+      'Eli was east of Clara.',
+      'The victim was in the final available cell.',
+    ],
+    solution: {'Ada': 0, 'Bea': 7, 'Clara': 14, 'Della': 21, 'Eli': 28},
+    blocked: {2, 4, 9, 13, 16, 19, 23, 26, 31, 34},
+  ),
+  Level(
+    number: 27,
+    name: 'The Casino Floor',
+    tagline: 'The house always wins. Tonight, so did the murderer.',
+    location: 'Casino',
+    victim: 'Rhea',
+    suspects: ['Alma', 'Blaise', 'Cora', 'Dane', 'Eden'],
+    clues: [
+      'Alma was in the first row and first column.',
+      'Blaise was in the second row and second column.',
+      'Cora was south of Blaise.',
+      'Dane was in the fourth row and fourth column.',
+      'Eden was east of Cora.',
+      'The victim was in the final available cell.',
+    ],
+    solution: {'Alma': 0, 'Blaise': 7, 'Cora': 14, 'Dane': 21, 'Eden': 28},
+    blocked: {1, 5, 8, 12, 17, 20, 24, 25, 30, 32},
+  ),
+  Level(
+    number: 28,
+    name: 'The Independent Bookshop',
+    tagline: 'The rarest thing in the shop was an honest alibi.',
+    location: 'Bookshop',
+    victim: 'Faye',
+    suspects: ['Anika', 'Bram', 'Cleo', 'Daria', 'Evan'],
+    clues: [
+      'Anika was in the first row and first column.',
+      'Bram was in the second row and second column.',
+      'Cleo was south of Bram.',
+      'Daria was in the fourth row and fourth column.',
+      'Evan was east of Cleo.',
+      'The victim was in the final available cell.',
+    ],
+    solution: {'Anika': 0, 'Bram': 7, 'Cleo': 14, 'Daria': 21, 'Evan': 28},
+    blocked: {2, 3, 10, 11, 15, 18, 22, 27, 29, 33},
+  ),
+  Level(
+    number: 29,
+    name: 'The Beach House Weekend',
+    tagline: 'The tide went out. The truth came in.',
+    location: 'Beach house',
+    victim: 'Wren',
+    suspects: ['Avery', 'Brody', 'Celia', 'Damon', 'Elsie'],
+    clues: [
+      'Avery was in the first row and first column.',
+      'Brody was in the second row and second column.',
+      'Celia was south of Brody.',
+      'Damon was in the fourth row and fourth column.',
+      'Elsie was east of Celia.',
+      'The victim was in the final available cell.',
+    ],
+    solution: {'Avery': 0, 'Brody': 7, 'Celia': 14, 'Damon': 21, 'Elsie': 28},
+    blocked: {1, 4, 9, 13, 16, 19, 23, 26, 31, 34},
+  ),
+  Level(
+    number: 30,
+    name: 'The Hotel Convention',
+    tagline: 'The keynote was cancelled. The investigation was not.',
+    location: 'Hotel',
+    victim: 'Quinn',
+    suspects: ['Ari', 'Bria', 'Carmen', 'Derek', 'Elena'],
+    clues: [
+      'Ari was in the first row and first column.',
+      'Bria was in the second row and second column.',
+      'Carmen was south of Bria.',
+      'Derek was in the fourth row and fourth column.',
+      'Elena was east of Carmen.',
+      'The victim was in the final available cell.',
+    ],
+    solution: {'Ari': 0, 'Bria': 7, 'Carmen': 14, 'Derek': 21, 'Elena': 28},
+    blocked: {2, 5, 8, 12, 17, 20, 24, 27, 30, 32},
+  ),
 ];
 
 // Ordered from the most approachable cases to the most involved deduction.
-const levelOrder = <int>[1, 2, 9, 7, 6, 5, 4, 8, 3, 0];
+const levelOrder = <int>[
+  1,
+  2,
+  9,
+  7,
+  6,
+  5,
+  4,
+  8,
+  3,
+  0,
+  ...<int>[
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+  ],
+];
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -702,7 +1101,7 @@ class _TopBar extends StatelessWidget {
       ),
       const Spacer(),
       Text(
-        'CASE FILES  •  10',
+        'CASE FILES  •  30',
         style: Theme.of(context).textTheme.labelLarge?.copyWith(
           fontWeight: FontWeight.bold,
           color: const Color(0xFF78808D),
@@ -942,6 +1341,18 @@ Set<int> _rect(int top, int bottom, int left, int right, [int size = 6]) => {
     for (var col = left; col <= right; col++) row * size + col,
 };
 
+RoomLayout _sixBySixRooms(
+  String northWest,
+  String northEast,
+  String southWest,
+  String southEast,
+) => RoomLayout({
+  northWest: _rect(0, 2, 0, 2),
+  northEast: _rect(0, 2, 3, 5),
+  southWest: _rect(3, 5, 0, 2),
+  southEast: _rect(3, 5, 3, 5),
+});
+
 RoomLayout layoutFor(Level level) {
   switch (level.number) {
     case 1:
@@ -1007,6 +1418,91 @@ RoomLayout layoutFor(Level level) {
         'Data Analysis': _rect(3, 5, 0, 2),
         'Freezer': _rect(3, 5, 3, 5),
       });
+    case 11:
+      return _sixBySixRooms(
+        'Main Gallery',
+        'Sculpture Hall',
+        'Archive',
+        'Gift Shop',
+      );
+    case 12:
+      return _sixBySixRooms('Cabins', 'Dining Car', 'Lounge', 'First Class');
+    case 13:
+      return _sixBySixRooms(
+        'Main Office',
+        'Evidence Room',
+        'Interrogation',
+        'Cell Block',
+      );
+    case 14:
+      return _sixBySixRooms(
+        'Kitchen',
+        'Dining Room',
+        'Guest Bedroom',
+        'Garden',
+      );
+    case 15:
+      return _sixBySixRooms(
+        'Clinic',
+        'Waiting Room',
+        'Records',
+        'Operating Room',
+      );
+    case 16:
+      return _sixBySixRooms(
+        'Recording Booths',
+        'Control Room',
+        'Green Room',
+        'Backstage',
+      );
+    case 17:
+      return _sixBySixRooms('Deck', 'Cabins', 'Dining Room', 'Engine Room');
+    case 18:
+      return _sixBySixRooms('Classrooms', 'Library', 'Cafeteria', 'Gymnasium');
+    case 19:
+      return _sixBySixRooms('Lobby', 'Theater', 'Dressing Rooms', 'Backstage');
+    case 20:
+      return _sixBySixRooms('Reception', 'Laboratory', 'Archive', 'Storage');
+    case 21:
+      return _sixBySixRooms(
+        'Living Room',
+        'Kitchen',
+        'Main Bedroom',
+        'Bathroom',
+      );
+    case 22:
+      return _sixBySixRooms(
+        'Boardroom',
+        'Break Room',
+        "Director's Office",
+        'Records',
+      );
+    case 23:
+      return _sixBySixRooms('Bakery', 'Cafe', 'Kitchen', 'Storage');
+    case 24:
+      return _sixBySixRooms('Rooftop', 'Penthouse', 'Office', 'Garage');
+    case 25:
+      return _sixBySixRooms('Museum', 'Sculpture Hall', 'Archive', 'Gift Shop');
+    case 26:
+      return _sixBySixRooms('Farmhouse', 'Kitchen', 'Barn', 'Guest Bedroom');
+    case 27:
+      return _sixBySixRooms('Casino Floor', 'VIP Lounge', 'Office', 'Vault');
+    case 28:
+      return _sixBySixRooms('Bookshop', 'Reading Room', 'Office', 'Stockroom');
+    case 29:
+      return _sixBySixRooms(
+        'Living Room',
+        'Kitchen',
+        'Guest Bedroom',
+        'Pool Deck',
+      );
+    case 30:
+      return _sixBySixRooms(
+        'Hotel Lobby',
+        'Restaurant',
+        'Guest Bedroom',
+        'Conference Room',
+      );
     default:
       return RoomLayout({
         'Living Room': _rect(0, 2, 0, 2),

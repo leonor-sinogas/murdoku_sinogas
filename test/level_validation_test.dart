@@ -2,6 +2,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:murdoku/main.dart';
 
 void main() {
+  test('case ordering includes every level exactly once', () {
+    expect(levelOrder.toSet().length, levels.length);
+    expect(
+      levelOrder,
+      containsAll(List<int>.generate(levels.length, (i) => i)),
+    );
+  });
+
   test('every case solution satisfies the board rules', () {
     for (final level in levels) {
       final layout = layoutFor(level);

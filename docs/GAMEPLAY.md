@@ -4,7 +4,7 @@
 
 Each case contains a grid divided into rooms or areas, a victim, and a group of suspects. Every character, including the victim, occupies one available cell. The player uses the clues to determine every character’s location. The victim must share a room with at least one suspect; that suspect is the murderer.
 
-The home screen orders the current cases from easier to more involved and assigns visible case numbers sequentially: Vacation House, Study Session, The Last Train, Hotel Check-In, Mountain Lodge, Gallery Opening, Late Night Shift, Boardroom B-12, The Laboratory, and The All-Day Conference.
+The home screen orders the current cases from easier to more involved and assigns visible case numbers sequentially. It now contains the original ten cases plus twenty new cases: The Museum After Dark, The Sleeper Car, The County Courthouse, The Garden Party, The Night Clinic, The Recording Studio, The Harbor Ferry, The Boarding School, The Grand Theater, The Research Annex, The Lakeside Cottage, The Executive Retreat, The Bakery Before Dawn, The Penthouse Party, The Natural History Wing, The Harvest Supper, The Casino Floor, The Independent Bookshop, The Beach House Weekend, and The Hotel Convention.
 
 The **Rules** button on the home screen opens a full-screen rules page. While a case is open, the information icon in the bottom-left help footer opens the same rules in a review dialog without leaving the puzzle.
 

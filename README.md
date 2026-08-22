@@ -4,7 +4,7 @@ Murdoku is a Flutter logic-murder puzzle game. Players place suspects into a gri
 
 This repository currently contains the local-first Flutter MVP:
 
-- Home page with 10 case files.
+- Home page with 30 case files, including 20 new English cases based on the supplied reference puzzles.
 - English puzzle content based on the supplied logic-grid references.
 - Responsive Flutter UI for web, macOS, and iOS targets.
 - Official suspect placement mode.

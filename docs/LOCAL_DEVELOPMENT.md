@@ -26,7 +26,7 @@ Port `8090` is the agreed local Murdoku preview port. It serves the generated `b
 
 The current widget tests verify:
 
-- The home screen renders all 10 case files.
+- The home screen renders all 30 case files.
 - Starting the first case opens the interactive grid and case panel.
 - Every case solution uses unique rows and columns, valid grid cells, and complete room coverage.
 - Windows are on outside-wall cells.
