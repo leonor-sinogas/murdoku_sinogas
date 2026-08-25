@@ -87,15 +87,15 @@ const levels = <Level>[
     ],
     solution: {
       'Andre': 0,
-      'Bethany': 10,
-      'Clyde': 20,
-      'Delilah': 30,
+      'Bethany': 19,
+      'Clyde': 11,
+      'Delilah': 35,
       'Eduardo': 40,
       'Felicia': 50,
-      'Greg': 60,
+      'Greg': 57,
       'Helena': 70,
     },
-    blocked: {4, 13, 22, 31, 39, 49, 58, 67, 76, 79},
+    blocked: {1, 2, 4, 13, 22, 31, 39, 49, 56, 58, 67, 76, 79},
   ),
   Level(
     number: 2,
@@ -112,8 +112,8 @@ const levels = <Level>[
       'Evan was beside a bed.',
       'The victim was in the last available cell.',
     ],
-    solution: {'Arianna': 5, 'Brycen': 6, 'Colleen': 15, 'Dan': 19, 'Evan': 28},
-    blocked: {0, 3, 9, 12, 16, 19, 25, 26, 28, 34},
+    solution: {'Arianna': 35, 'Brycen': 6, 'Colleen': 15, 'Dan': 19, 'Evan': 26},
+    blocked: {0, 3, 9, 12, 16, 18, 19, 25, 26, 28, 29, 34},
   ),
   Level(
     number: 3,
@@ -130,8 +130,8 @@ const levels = <Level>[
       'Evelyn was beside a television.',
       'The victim was in the last available cell.',
     ],
-    solution: {'Aaron': 0, 'Bruno': 7, 'Clara': 14, 'Donna': 21, 'Evelyn': 28},
-    blocked: {1, 4, 6, 11, 13, 16, 22, 25, 30, 35},
+    solution: {'Aaron': 2, 'Bruno': 15, 'Clara': 10, 'Donna': 24, 'Evelyn': 35},
+    blocked: {1, 4, 6, 11, 13, 16, 22, 25, 28, 30, 35},
   ),
   Level(
     number: 4,
@@ -159,13 +159,13 @@ const levels = <Level>[
       'The victim was alone in the final cell.',
     ],
     solution: {
-      'Ashton': 1,
-      'Blaine': 7,
-      'Carla': 16,
-      'Delilah': 24,
-      'Estella': 32,
-      'Frank': 40,
-      'Galen': 48,
+      'Ashton': 29,
+      'Blaine': 10,
+      'Carla': 2,
+      'Delilah': 47,
+      'Estella': 21,
+      'Frank': 18,
+      'Galen': 41,
     },
     blocked: {0, 4, 6, 11, 15, 18, 22, 24, 29, 33},
   ),
@@ -186,12 +186,12 @@ const levels = <Level>[
       'The victim was in the final available cell.',
     ],
     solution: {
-      'Iris': 1,
-      'Jonah': 6,
-      'Kendall': 14,
+      'Iris': 14,
+      'Jonah': 7,
+      'Kendall': 5,
       'Luca': 21,
-      'Mina': 29,
-      'Nico': 34,
+      'Mina': 28,
+      'Nico': 30,
     },
     blocked: {0, 3, 8, 12, 16, 22, 24, 30, 31, 35},
   ),
@@ -214,10 +214,10 @@ const levels = <Level>[
     solution: {
       'Avery': 0,
       'Beck': 7,
-      'Cora': 14,
-      'Dylan': 22,
-      'Mae': 27,
-      'Silas': 35,
+      'Cora': 16,
+      'Dylan': 23,
+      'Mae': 26,
+      'Silas': 33,
     },
     blocked: {1, 4, 9, 11, 17, 21, 24, 28, 32, 34},
   ),
@@ -238,12 +238,12 @@ const levels = <Level>[
       'The victim was in the final available cell.',
     ],
     solution: {
-      'Ayla': 1,
-      'Bram': 6,
-      'Cleo': 14,
-      'Jasper': 21,
-      'Nora': 29,
-      'Otto': 34,
+      'Ayla': 0,
+      'Bram': 7,
+      'Cleo': 16,
+      'Jasper': 26,
+      'Nora': 23,
+      'Otto': 33,
     },
     blocked: {0, 7, 10, 13, 16, 22, 25, 30, 33, 35},
   ),
@@ -264,12 +264,12 @@ const levels = <Level>[
       'The victim was in the final available cell.',
     ],
     solution: {
-      'June': 0,
+      'June': 26,
       'Kira': 7,
-      'Miles': 14,
-      'Reese': 21,
-      'Sana': 28,
-      'Toby': 35,
+      'Miles': 23,
+      'Reese': 4,
+      'Sana': 30,
+      'Toby': 15,
     },
     blocked: {1, 4, 8, 11, 15, 19, 21, 22, 27, 30, 34},
   ),
@@ -318,10 +318,10 @@ const levels = <Level>[
     solution: {
       'Ada': 0,
       'Bo': 7,
-      'Cass': 14,
-      'Drew': 21,
-      'Elle': 28,
-      'Fox': 35,
+      'Cass': 16,
+      'Drew': 23,
+      'Elle': 26,
+      'Fox': 33,
     },
     blocked: {0, 4, 9, 11, 16, 18, 23, 27, 30, 34},
   ),
@@ -336,11 +336,11 @@ const levels = <Level>[
       'Aiden was in the first row and first column.',
       'Beatrice was in the second row and second column.',
       'Cole was south of Beatrice.',
-      'Delia was in the fourth row and fourth column.',
+      'Delia was in the third row and fifth column.',
       'Emery was east of Cole.',
       'The victim was in the final available cell.',
     ],
-    solution: {'Aiden': 0, 'Beatrice': 7, 'Cole': 14, 'Delia': 21, 'Emery': 28},
+    solution: {'Aiden': 0, 'Beatrice': 7, 'Cole': 20, 'Delia': 16, 'Emery': 29},
     blocked: {1, 4, 8, 10, 13, 16, 18, 23, 26, 31},
   ),
   Level(
@@ -354,11 +354,11 @@ const levels = <Level>[
       'Briar was in the first row and first column.',
       'Callum was in the second row and second column.',
       'Daphne was south of Callum.',
-      'Elias was in the fourth row and fourth column.',
+      'Elias was in the third row and fifth column.',
       'Freya was east of Daphne.',
       'The victim was in the final available cell.',
     ],
-    solution: {'Briar': 0, 'Callum': 7, 'Daphne': 14, 'Elias': 21, 'Freya': 28},
+    solution: {'Briar': 0, 'Callum': 7, 'Daphne': 20, 'Elias': 16, 'Freya': 29},
     blocked: {2, 5, 8, 11, 13, 17, 19, 24, 30, 33},
   ),
   Level(
@@ -372,11 +372,11 @@ const levels = <Level>[
       'Avery was in the first row and first column.',
       'Bruno was in the second row and second column.',
       'Clara was south of Bruno.',
-      'Dorian was in the fourth row and fourth column.',
+      'Dorian was in the third row and fifth column.',
       'Elise was east of Clara.',
       'The victim was in the final available cell.',
     ],
-    solution: {'Avery': 0, 'Bruno': 7, 'Clara': 14, 'Dorian': 21, 'Elise': 28},
+    solution: {'Avery': 0, 'Bruno': 7, 'Clara': 20, 'Dorian': 16, 'Elise': 29},
     blocked: {1, 3, 9, 12, 16, 18, 22, 25, 29, 34},
   ),
   Level(
@@ -390,16 +390,16 @@ const levels = <Level>[
       'Amelia was in the first row and first column.',
       'Bennett was in the second row and second column.',
       'Celia was south of Bennett.',
-      'Davis was in the fourth row and fourth column.',
+      'Davis was in the third row and fifth column.',
       'Evelyn was east of Celia.',
       'The victim was in the final available cell.',
     ],
     solution: {
       'Amelia': 0,
       'Bennett': 7,
-      'Celia': 14,
-      'Davis': 21,
-      'Evelyn': 28,
+      'Celia': 20,
+      'Davis': 16,
+      'Evelyn': 29,
     },
     blocked: {2, 4, 8, 10, 15, 17, 20, 24, 27, 32},
   ),
@@ -414,11 +414,11 @@ const levels = <Level>[
       'Archer was in the first row and first column.',
       'Bianca was in the second row and second column.',
       'Carter was south of Bianca.',
-      'Demi was in the fourth row and fourth column.',
+      'Demi was in the third row and fifth column.',
       'Evan was east of Carter.',
       'The victim was in the final available cell.',
     ],
-    solution: {'Archer': 0, 'Bianca': 7, 'Carter': 14, 'Demi': 21, 'Evan': 28},
+    solution: {'Archer': 0, 'Bianca': 7, 'Carter': 20, 'Demi': 16, 'Evan': 29},
     blocked: {1, 5, 9, 11, 16, 19, 23, 26, 30, 34},
   ),
   Level(
@@ -432,11 +432,11 @@ const levels = <Level>[
       'Ari was in the first row and first column.',
       'Blake was in the second row and second column.',
       'Carmen was south of Blake.',
-      'Devon was in the fourth row and fourth column.',
+      'Devon was in the third row and fifth column.',
       'Etta was east of Carmen.',
       'The victim was in the final available cell.',
     ],
-    solution: {'Ari': 0, 'Blake': 7, 'Carmen': 14, 'Devon': 21, 'Etta': 28},
+    solution: {'Ari': 0, 'Blake': 7, 'Carmen': 20, 'Devon': 16, 'Etta': 29},
     blocked: {2, 3, 8, 12, 15, 18, 22, 25, 29, 33},
   ),
   Level(
@@ -450,11 +450,11 @@ const levels = <Level>[
       'Ada was in the first row and first column.',
       'Beck was in the second row and second column.',
       'Cleo was south of Beck.',
-      'Drew was in the fourth row and fourth column.',
+      'Drew was in the third row and fifth column.',
       'Faye was east of Cleo.',
       'The victim was in the final available cell.',
     ],
-    solution: {'Ada': 0, 'Beck': 7, 'Cleo': 14, 'Drew': 21, 'Faye': 28},
+    solution: {'Ada': 0, 'Beck': 7, 'Cleo': 20, 'Drew': 16, 'Faye': 29},
     blocked: {1, 4, 9, 13, 16, 20, 23, 27, 31, 34},
   ),
   Level(
@@ -468,11 +468,11 @@ const levels = <Level>[
       'Alina was in the first row and first column.',
       'Boris was in the second row and second column.',
       'Chloe was south of Boris.',
-      'Derek was in the fourth row and fourth column.',
+      'Derek was in the third row and fifth column.',
       'Elsa was east of Chloe.',
       'The victim was in the final available cell.',
     ],
-    solution: {'Alina': 0, 'Boris': 7, 'Chloe': 14, 'Derek': 21, 'Elsa': 28},
+    solution: {'Alina': 0, 'Boris': 7, 'Chloe': 20, 'Derek': 16, 'Elsa': 29},
     blocked: {2, 5, 8, 11, 17, 19, 24, 26, 30, 32},
   ),
   Level(
@@ -486,11 +486,11 @@ const levels = <Level>[
       'Anton was in the first row and first column.',
       'Bella was in the second row and second column.',
       'Cyrus was south of Bella.',
-      'Dahlia was in the fourth row and fourth column.',
+      'Dahlia was in the third row and fifth column.',
       'Enzo was east of Cyrus.',
       'The victim was in the final available cell.',
     ],
-    solution: {'Anton': 0, 'Bella': 7, 'Cyrus': 14, 'Dahlia': 21, 'Enzo': 28},
+    solution: {'Anton': 0, 'Bella': 7, 'Cyrus': 20, 'Dahlia': 16, 'Enzo': 29},
     blocked: {1, 3, 10, 12, 15, 18, 22, 27, 29, 33},
   ),
   Level(
@@ -504,11 +504,11 @@ const levels = <Level>[
       'Anya was in the first row and first column.',
       'Brent was in the second row and second column.',
       'Cleo was south of Brent.',
-      'Damon was in the fourth row and fourth column.',
+      'Damon was in the third row and fifth column.',
       'Esme was east of Cleo.',
       'The victim was in the final available cell.',
     ],
-    solution: {'Anya': 0, 'Brent': 7, 'Cleo': 14, 'Damon': 21, 'Esme': 28},
+    solution: {'Anya': 0, 'Brent': 7, 'Cleo': 20, 'Damon': 16, 'Esme': 29},
     blocked: {2, 4, 8, 13, 16, 19, 23, 25, 31, 34},
   ),
   Level(
@@ -522,11 +522,11 @@ const levels = <Level>[
       'Avery was in the first row and first column.',
       'Brooke was in the second row and second column.',
       'Casey was south of Brooke.',
-      'Dylan was in the fourth row and fourth column.',
+      'Dylan was in the third row and fifth column.',
       'Emilia was east of Casey.',
       'The victim was in the final available cell.',
     ],
-    solution: {'Avery': 0, 'Brooke': 7, 'Casey': 14, 'Dylan': 21, 'Emilia': 28},
+    solution: {'Avery': 0, 'Brooke': 7, 'Casey': 20, 'Dylan': 16, 'Emilia': 29},
     blocked: {1, 5, 9, 11, 17, 20, 24, 26, 30, 32},
   ),
   Level(
@@ -540,11 +540,11 @@ const levels = <Level>[
       'Alec was in the first row and first column.',
       'Bria was in the second row and second column.',
       'Cora was south of Bria.',
-      'Dean was in the fourth row and fourth column.',
+      'Dean was in the third row and fifth column.',
       'Elena was east of Cora.',
       'The victim was in the final available cell.',
     ],
-    solution: {'Alec': 0, 'Bria': 7, 'Cora': 14, 'Dean': 21, 'Elena': 28},
+    solution: {'Alec': 0, 'Bria': 7, 'Cora': 20, 'Dean': 16, 'Elena': 29},
     blocked: {2, 3, 8, 12, 15, 18, 22, 27, 29, 33},
   ),
   Level(
@@ -558,11 +558,11 @@ const levels = <Level>[
       'Abel was in the first row and first column.',
       'Bridget was in the second row and second column.',
       'Celia was south of Bridget.',
-      'Dario was in the fourth row and fourth column.',
+      'Dario was in the third row and fifth column.',
       'Eve was east of Celia.',
       'The victim was in the final available cell.',
     ],
-    solution: {'Abel': 0, 'Bridget': 7, 'Celia': 14, 'Dario': 21, 'Eve': 28},
+    solution: {'Abel': 0, 'Bridget': 7, 'Celia': 20, 'Dario': 16, 'Eve': 29},
     blocked: {1, 4, 9, 13, 16, 19, 23, 25, 31, 34},
   ),
   Level(
@@ -576,11 +576,11 @@ const levels = <Level>[
       'Arden was in the first row and first column.',
       'Blair was in the second row and second column.',
       'Cleo was south of Blair.',
-      'Dante was in the fourth row and fourth column.',
+      'Dante was in the third row and fifth column.',
       'Elle was east of Cleo.',
       'The victim was in the final available cell.',
     ],
-    solution: {'Arden': 0, 'Blair': 7, 'Cleo': 14, 'Dante': 21, 'Elle': 28},
+    solution: {'Arden': 0, 'Blair': 7, 'Cleo': 20, 'Dante': 16, 'Elle': 29},
     blocked: {2, 5, 10, 12, 17, 20, 24, 26, 30, 32},
   ),
   Level(
@@ -594,11 +594,11 @@ const levels = <Level>[
       'Asha was in the first row and first column.',
       'Bruno was in the second row and second column.',
       'Celia was south of Bruno.',
-      'Drew was in the fourth row and fourth column.',
+      'Drew was in the third row and fifth column.',
       'Esther was east of Celia.',
       'The victim was in the final available cell.',
     ],
-    solution: {'Asha': 0, 'Bruno': 7, 'Celia': 14, 'Drew': 21, 'Esther': 28},
+    solution: {'Asha': 0, 'Bruno': 7, 'Celia': 20, 'Drew': 16, 'Esther': 29},
     blocked: {1, 3, 8, 11, 15, 18, 22, 27, 29, 33},
   ),
   Level(
@@ -612,11 +612,11 @@ const levels = <Level>[
       'Ada was in the first row and first column.',
       'Bea was in the second row and second column.',
       'Clara was south of Bea.',
-      'Della was in the fourth row and fourth column.',
+      'Della was in the third row and fifth column.',
       'Eli was east of Clara.',
       'The victim was in the final available cell.',
     ],
-    solution: {'Ada': 0, 'Bea': 7, 'Clara': 14, 'Della': 21, 'Eli': 28},
+    solution: {'Ada': 0, 'Bea': 7, 'Clara': 20, 'Della': 16, 'Eli': 29},
     blocked: {2, 4, 9, 13, 16, 19, 23, 26, 31, 34},
   ),
   Level(
@@ -630,11 +630,11 @@ const levels = <Level>[
       'Alma was in the first row and first column.',
       'Blaise was in the second row and second column.',
       'Cora was south of Blaise.',
-      'Dane was in the fourth row and fourth column.',
+      'Dane was in the third row and fifth column.',
       'Eden was east of Cora.',
       'The victim was in the final available cell.',
     ],
-    solution: {'Alma': 0, 'Blaise': 7, 'Cora': 14, 'Dane': 21, 'Eden': 28},
+    solution: {'Alma': 0, 'Blaise': 7, 'Cora': 20, 'Dane': 16, 'Eden': 29},
     blocked: {1, 5, 8, 12, 17, 20, 24, 25, 30, 32},
   ),
   Level(
@@ -648,11 +648,11 @@ const levels = <Level>[
       'Anika was in the first row and first column.',
       'Bram was in the second row and second column.',
       'Cleo was south of Bram.',
-      'Daria was in the fourth row and fourth column.',
+      'Daria was in the third row and fifth column.',
       'Evan was east of Cleo.',
       'The victim was in the final available cell.',
     ],
-    solution: {'Anika': 0, 'Bram': 7, 'Cleo': 14, 'Daria': 21, 'Evan': 28},
+    solution: {'Anika': 0, 'Bram': 7, 'Cleo': 20, 'Daria': 16, 'Evan': 29},
     blocked: {2, 3, 10, 11, 15, 18, 22, 27, 29, 33},
   ),
   Level(
@@ -666,11 +666,11 @@ const levels = <Level>[
       'Avery was in the first row and first column.',
       'Brody was in the second row and second column.',
       'Celia was south of Brody.',
-      'Damon was in the fourth row and fourth column.',
+      'Damon was in the third row and fifth column.',
       'Elsie was east of Celia.',
       'The victim was in the final available cell.',
     ],
-    solution: {'Avery': 0, 'Brody': 7, 'Celia': 14, 'Damon': 21, 'Elsie': 28},
+    solution: {'Avery': 0, 'Brody': 7, 'Celia': 20, 'Damon': 16, 'Elsie': 29},
     blocked: {1, 4, 9, 13, 16, 19, 23, 26, 31, 34},
   ),
   Level(
@@ -684,11 +684,11 @@ const levels = <Level>[
       'Ari was in the first row and first column.',
       'Bria was in the second row and second column.',
       'Carmen was south of Bria.',
-      'Derek was in the fourth row and fourth column.',
+      'Derek was in the third row and fifth column.',
       'Elena was east of Carmen.',
       'The victim was in the final available cell.',
     ],
-    solution: {'Ari': 0, 'Bria': 7, 'Carmen': 14, 'Derek': 21, 'Elena': 28},
+    solution: {'Ari': 0, 'Bria': 7, 'Carmen': 20, 'Derek': 16, 'Elena': 29},
     blocked: {2, 5, 8, 12, 17, 20, 24, 27, 30, 32},
   ),
 ];
@@ -853,7 +853,7 @@ class _RulesContent extends StatelessWidget {
         ),
         const SizedBox(height: 9),
         const Text(
-          'Use the clues to place every suspect in a unique available cell. The murderer is the suspect who shares a room with the victim.',
+          'Use the clues to place every suspect in a unique available cell. The victim must share a room with exactly one suspect; that suspect is the murderer.',
           style: TextStyle(color: ink, fontSize: 16, height: 1.4),
         ),
         const SizedBox(height: 22),
@@ -879,7 +879,7 @@ class _RulesContent extends StatelessWidget {
           number: '4',
           title: 'Finish the grid',
           body:
-              'Each suspect occupies one row, one column, and one available cell. Thick borders separate the named rooms.',
+              'Each suspect occupies one row, one column, and one available cell. The victim’s room must contain exactly one suspect. Thick borders separate the named rooms.',
         ),
         const SizedBox(height: 14),
         Container(
@@ -1526,7 +1526,8 @@ Map<String, int> solutionFor(Level level) {
   final available = <int>[];
   for (var cell = 0; cell < level.gridSize * level.gridSize; cell++) {
     final object = objects[cell];
-    if (!level.blocked.contains(cell) || object?.occupiable == true) {
+    if ((!level.blocked.contains(cell) && object?.occupiable != false) ||
+        object?.occupiable == true) {
       available.add(cell);
     }
   }
@@ -1534,13 +1535,21 @@ Map<String, int> solutionFor(Level level) {
       .map(layout.roomAt)
       .where((room) => room.isNotEmpty)
       .toSet();
+  final suspectCountByRoom = <String, int>{};
+  for (final cell in solution.values) {
+    final room = layout.roomAt(cell);
+    suspectCountByRoom[room] = (suspectCountByRoom[room] ?? 0) + 1;
+  }
   final victimCell = available.reversed.firstWhere(
     (cell) =>
         suspectRooms.contains(layout.roomAt(cell)) &&
+        suspectCountByRoom[layout.roomAt(cell)] == 1 &&
         !usedRows.contains(cell ~/ level.gridSize) &&
         !usedColumns.contains(cell % level.gridSize),
     orElse: () => available.reversed.firstWhere(
-      (cell) => suspectRooms.contains(layout.roomAt(cell)),
+      (cell) =>
+          suspectRooms.contains(layout.roomAt(cell)) &&
+          suspectCountByRoom[layout.roomAt(cell)] == 1,
       orElse: () => available.last,
     ),
   );
@@ -1637,11 +1646,95 @@ Map<int, BoardObject> objectsFor(Level level) {
     final choices = placementEligible.isEmpty ? eligible : placementEligible;
     result[cell] = choices[(index + level.number) % choices.length];
   }
+
+  // Object placement is clue-aware. The old rotating assignment could put a
+  // television, window, or plant somewhere unrelated to the clue that names
+  // it (or omit that object entirely). Every referenced object is now placed
+  // in the character's room, preferably in an adjacent cell.
+  for (final clue in level.clues) {
+    final person = cluePersonName(clue, level);
+    final clueObjects = objectNamesInClue(clue);
+    final objectName = clueObjects.isEmpty ? null : clueObjects.first;
+    final personCell = person == null ? null : level.solution[person];
+    if (objectName == null || personCell == null) continue;
+    final object = objects.firstWhere((item) => item.name == objectName);
+    final room = layout.roomAt(personCell);
+    final adjacent = <int>[];
+    for (var cell = 0; cell < size * size; cell++) {
+      if (solutionCells.contains(cell) || layout.roomAt(cell) != room) continue;
+      if (!_cellsAreAdjacent(personCell, cell, size)) continue;
+      if (object.name == 'Window' && !isOutsideWall(cell)) continue;
+      adjacent.add(cell);
+    }
+    final fallback = <int>[];
+    for (var cell = 0; cell < size * size; cell++) {
+      if (solutionCells.contains(cell) || layout.roomAt(cell) != room) continue;
+      if (result[cell] != null && result[cell]!.name != objectName) continue;
+      if (object.name == 'Window' && !isOutsideWall(cell)) continue;
+      fallback.add(cell);
+    }
+    final openAdjacent = adjacent.where((cell) => result[cell] == null).toList();
+    final candidates = openAdjacent.isNotEmpty
+        ? openAdjacent
+        : adjacent.isNotEmpty
+        ? adjacent
+        : fallback;
+    if (candidates.isNotEmpty) {
+      final preferred = candidates.where(level.blocked.contains).toList();
+      result[preferred.isNotEmpty ? preferred.first : candidates.first] = object;
+    }
+  }
+
+  // A seated/lying clue identifies the occupiable object under the person,
+  // even when that cell was not part of the original blocked set.
+  final seatClue = RegExp(
+    r'^(\w+) was .*?\b(chair|bed)\b',
+    caseSensitive: false,
+  );
+  for (final clue in level.clues) {
+    final match = seatClue.firstMatch(clue);
+    if (match == null) continue;
+    final cell = level.solution[match.group(1)!];
+    if (cell == null) continue;
+    result[cell] = objects.firstWhere(
+      (item) => item.name.toLowerCase() == match.group(2)!.toLowerCase(),
+    );
+  }
   if (level.number == 2) {
     result[19] = objects.firstWhere((object) => object.name == 'Bed');
-    result[25] = objects.firstWhere((object) => object.name == 'Plant');
+    result[18] = objects.firstWhere((object) => object.name == 'Plant');
+    result[25] = objects.firstWhere((object) => object.name == 'Bed');
+    result[29] = objects.firstWhere((object) => object.name == 'Television');
   }
   return result;
+}
+
+const _clueObjectNames = <String, String>{
+  'television': 'Television',
+  'bookshelf': 'Bookshelf',
+  'fireplace': 'Fireplace',
+  'statue': 'Statue',
+  'window': 'Window',
+  'plant': 'Plant',
+  'table': 'Table',
+  'chair': 'Chair',
+  'bed': 'Bed',
+  'box': 'Box',
+};
+
+Set<String> objectNamesInClue(String clue) {
+  final lower = clue.toLowerCase();
+  return _clueObjectNames.entries
+      .where((entry) => lower.contains(entry.key))
+      .map((entry) => entry.value)
+      .toSet();
+}
+
+String? cluePersonName(String clue, Level level) {
+  for (final person in [...level.suspects, level.victim]) {
+    if (clue.toLowerCase().startsWith(person.toLowerCase())) return person;
+  }
+  return null;
 }
 
 bool _cellsAreAdjacent(int first, int second, int size) {
@@ -1656,6 +1749,27 @@ bool objectCluesMatch(Level level, Map<String, int> solution) {
   final objects = objectsFor(level);
   final layout = layoutFor(level);
   for (final clue in level.clues) {
+    final relation = RegExp(
+      r'^(\w+) was (?:beside|in front of) (?:an? |the )?(\w+)',
+      caseSensitive: false,
+    ).firstMatch(clue);
+    if (relation != null) {
+      final personCell = solution[relation.group(1)!];
+      final objectName = _clueObjectNames[relation.group(2)!.toLowerCase()];
+      if (personCell == null || objectName == null) return false;
+      final matchingCells = objects.entries
+          .where(
+            (entry) =>
+                entry.value.name == objectName &&
+                layout.roomAt(entry.key) == layout.roomAt(personCell),
+          )
+          .map((entry) => entry.key);
+      if (!matchingCells.any(
+        (cell) => _cellsAreAdjacent(personCell, cell, level.gridSize),
+      )) {
+        return false;
+      }
+    }
     final match = RegExp(
       r'^(\w+) was beside an? (\w+) and was in an? (chair|bed)\.',
       caseSensitive: false,
@@ -1685,13 +1799,30 @@ bool objectCluesMatch(Level level, Map<String, int> solution) {
   return true;
 }
 
+class _PuzzleSnapshot {
+  _PuzzleSnapshot({
+    required this.placed,
+    required this.notes,
+    required this.manualXs,
+    required this.activeSuspect,
+  });
+
+  final Map<String, int?> placed;
+  final Map<int, Set<String>> notes;
+  final Set<int> manualXs;
+  final String? activeSuspect;
+}
+
 class _PuzzleScreenState extends State<PuzzleScreen> {
   late final Map<String, int?> placed;
   late final Map<String, int> answer;
   late final Map<int, Set<String>> notes;
+  final List<_PuzzleSnapshot> _history = [];
+  final Set<int> manualXs = <int>{};
   String? activeSuspect;
   String? selectedMurderer;
   bool notesMode = false;
+  bool xMode = false;
   bool checked = false;
 
   @override
@@ -1714,16 +1845,64 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
       .map((entry) => entry.key)
       .firstOrNull;
 
+  void _saveSnapshot() {
+    _history.add(
+      _PuzzleSnapshot(
+        placed: Map<String, int?>.from(placed),
+        notes: {
+          for (final entry in notes.entries)
+            entry.key: Set<String>.from(entry.value),
+        },
+        manualXs: Set<int>.from(manualXs),
+        activeSuspect: activeSuspect,
+      ),
+    );
+  }
+
+  void undo() {
+    if (_history.isEmpty) return;
+    final snapshot = _history.removeLast();
+    setState(() {
+      placed
+        ..clear()
+        ..addAll(snapshot.placed);
+      notes
+        ..clear()
+        ..addAll({
+          for (final entry in snapshot.notes.entries)
+            entry.key: Set<String>.from(entry.value),
+        });
+      manualXs
+        ..clear()
+        ..addAll(snapshot.manualXs);
+      activeSuspect = snapshot.activeSuspect;
+      checked = false;
+    });
+  }
+
   void tapCell(int cell) {
     final object = objectsFor(widget.level)[cell];
     final blocked =
-        widget.level.blocked.contains(cell) && !(object?.occupiable ?? false);
+        (widget.level.blocked.contains(cell) ||
+            object != null && !object.occupiable) &&
+        !(object?.occupiable ?? false);
     final occupant = occupantAt(cell);
+    if (xMode) {
+      setState(() {
+        if (manualXs.contains(cell)) {
+          manualXs.remove(cell);
+        } else {
+          manualXs.add(cell);
+        }
+      });
+      return;
+    }
     if (blocked) return;
     setState(() {
       if (!notesMode &&
           occupant != null &&
           (activeSuspect == null || occupant == activeSuspect)) {
+        _saveSnapshot();
         placed[occupant] = null;
         notes[cell]!.clear();
         activeSuspect = null;
@@ -1740,6 +1919,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
           notes[cell]!.add(suspect);
         }
       } else {
+        _saveSnapshot();
         final previousCell = placed[suspect];
         if (previousCell != null) notes[previousCell]!.remove(suspect);
         final previousOccupant = occupantAt(cell);
@@ -1758,19 +1938,33 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
   }
 
   void check() {
+    if (selectedMurderer == null) {
+      showDialog(
+        context: context,
+        builder: (_) => const AlertDialog(
+          title: Text('Choose a suspect'),
+          content: Text('Select who you think the murderer is, then submit your accusation.'),
+        ),
+      );
+      return;
+    }
     final complete = placed.values.every((value) => value != null);
     final victimCell = placed[widget.level.victim];
     final victimRoom = victimCell == null
         ? ''
         : layoutFor(widget.level).roomAt(victimCell);
-    final victimHasRoommate =
-        victimCell != null &&
-        placed.entries.any(
-          (entry) =>
-              entry.key != widget.level.victim &&
-              entry.value != null &&
-              layoutFor(widget.level).roomAt(entry.value!) == victimRoom,
-        );
+    final victimRoomSuspects = victimCell == null
+        ? <String>[]
+        : placed.entries
+              .where(
+                (entry) =>
+                    entry.key != widget.level.victim &&
+                    entry.value != null &&
+                    layoutFor(widget.level).roomAt(entry.value!) == victimRoom,
+              )
+              .map((entry) => entry.key)
+              .toList();
+    final victimHasRoommate = victimRoomSuspects.length == 1;
     final correct =
         complete &&
         victimHasRoommate &&
@@ -1784,26 +1978,33 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
       builder: (_) => AlertDialog(
         title: Text(
           correct && murdererCorrect
-              ? 'Case solved'
+              ? 'Congratulations!'
               : complete && !murdererCorrect
-              ? 'Murderer not identified'
+              ? '$selectedMurderer was not the murderer'
               : complete && !victimHasRoommate
-              ? 'Victim cannot be alone'
+              ? 'Check the victim’s room'
               : complete
               ? 'Not quite'
               : 'Keep investigating',
         ),
-        content: Text(
-          correct && murdererCorrect
-              ? 'Excellent deduction. ${widget.level.victim} was not alone.'
-              : complete && !murdererCorrect
-              ? 'The murderer was $murderer. Revisit the room containing the victim.'
-              : complete && !victimHasRoommate
-              ? 'The victim must share a room with at least one suspect.'
-              : complete
-              ? 'One or more suspects are in the wrong cell. Re-read the clues and try again.'
-              : 'Place every character, including the victim, and choose who you think is the murderer.',
-        ),
+        content: correct && murdererCorrect
+            ? const Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('🎉  🎊  🎉', style: TextStyle(fontSize: 34)),
+                  SizedBox(height: 12),
+                  Text('You found the murderer!'),
+                ],
+              )
+            : Text(
+                complete && !murdererCorrect
+                    ? '$selectedMurderer was not the murderer. Look at the clues again and find the real killer.'
+                    : complete && !victimHasRoommate
+                    ? 'The victim must be in a room with exactly one suspect.'
+                    : complete
+                    ? 'One or more suspects are in the wrong cell. Re-read the clues and try again.'
+                    : 'Place every character, including the victim, before submitting your accusation.',
+              ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -1829,7 +2030,12 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
         ],
       ),
       actions: [
-        TextButton(onPressed: check, child: const Text('CHECK SOLUTION')),
+        IconButton(
+          onPressed: _history.isEmpty ? null : undo,
+          tooltip: 'Undo last placement',
+          icon: const Icon(Icons.undo_rounded),
+        ),
+        TextButton(onPressed: check, child: const Text('SUBMIT ACCUSATION')),
       ],
     ),
     body: Column(
@@ -1849,6 +2055,8 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
                     onCellTap: tapCell,
                     notes: notes,
                     notesMode: notesMode,
+                    xMode: xMode,
+                    manualXs: manualXs,
                   );
                   final clues = _Clues(
                     level: widget.level,
@@ -1857,7 +2065,11 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
                     onSuspectTap: (name) =>
                         setState(() => activeSuspect = name),
                     notesMode: notesMode,
-                    onModeChanged: (value) => setState(() => notesMode = value),
+                    xMode: xMode,
+                    onModeChanged: (value) => setState(() {
+                      notesMode = value == 'notes';
+                      xMode = value == 'x';
+                    }),
                     selectedMurderer: selectedMurderer,
                     onMurdererChanged: (name) =>
                         setState(() => selectedMurderer = name),
@@ -1913,7 +2125,9 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
                 Expanded(
                   child: Text(
                     activeSuspect == null
-                        ? 'Select a suspect, then choose a cell. Tap a placed suspect to remove it.'
+                        ? xMode
+                            ? 'Tap cells to add or remove your own X marks.'
+                            : 'Select a suspect, then choose a cell. Tap a placed suspect to remove it.'
                         : notesMode
                         ? 'Tap cells to add or remove a candidate note for $activeSuspect.'
                         : 'Tap an open cell to place $activeSuspect.',
@@ -1938,6 +2152,8 @@ class _Grid extends StatelessWidget {
     required this.onCellTap,
     required this.notes,
     required this.notesMode,
+    required this.xMode,
+    required this.manualXs,
   });
   final Level level;
   final Map<String, int?> placed;
@@ -1946,6 +2162,8 @@ class _Grid extends StatelessWidget {
   final ValueChanged<int> onCellTap;
   final Map<int, Set<String>> notes;
   final bool notesMode;
+  final bool xMode;
+  final Set<int> manualXs;
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1995,7 +2213,8 @@ class _Grid extends StatelessWidget {
                       final room = layout.roomAt(index);
                       final object = objects[index];
                       final blocked =
-                          level.blocked.contains(index) &&
+                          (level.blocked.contains(index) ||
+                              object != null && !object.occupiable) &&
                           !(object?.occupiable ?? false);
                       final row = index ~/ level.gridSize;
                       final column = index % level.gridSize;
@@ -2047,6 +2266,8 @@ class _Grid extends StatelessWidget {
                                 ? coral
                                 : notesMode && activeSuspect != null
                                 ? const Color(0xFFF1E2E4)
+                                : xMode
+                                ? const Color(0xFFE7EFEB)
                                 : paper,
                             borderRadius: BorderRadius.zero,
                             border: border,
@@ -2143,6 +2364,18 @@ class _Grid extends StatelessWidget {
                                     ),
                                   ),
                                 ),
+                              if (manualXs.contains(index))
+                                Positioned.fill(
+                                  child: IgnorePointer(
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.close_rounded,
+                                        color: brickDark.withValues(alpha: .3),
+                                        size: 25,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                             ],
                           ),
                         ),
@@ -2216,6 +2449,7 @@ class _Clues extends StatelessWidget {
     required this.activeSuspect,
     required this.onSuspectTap,
     required this.notesMode,
+    required this.xMode,
     required this.onModeChanged,
     required this.selectedMurderer,
     required this.onMurdererChanged,
@@ -2225,7 +2459,8 @@ class _Clues extends StatelessWidget {
   final String? activeSuspect;
   final ValueChanged<String> onSuspectTap;
   final bool notesMode;
-  final ValueChanged<bool> onModeChanged;
+  final bool xMode;
+  final ValueChanged<String> onModeChanged;
   final String? selectedMurderer;
   final ValueChanged<String> onMurdererChanged;
   @override
@@ -2377,20 +2612,25 @@ class _Clues extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 9),
-        SegmentedButton<bool>(
+        SegmentedButton<String>(
           segments: const [
             ButtonSegment(
-              value: false,
+              value: 'place',
               label: Text('Place person'),
               icon: Icon(Icons.person_add_alt_1_rounded),
             ),
             ButtonSegment(
-              value: true,
+              value: 'notes',
               label: Text('Add notes'),
               icon: Icon(Icons.edit_note_rounded),
             ),
+            ButtonSegment(
+              value: 'x',
+              label: Text('Mark X'),
+              icon: Icon(Icons.close_rounded),
+            ),
           ],
-          selected: {notesMode},
+          selected: {xMode ? 'x' : notesMode ? 'notes' : 'place'},
           onSelectionChanged: (selection) => onModeChanged(selection.first),
           style: ButtonStyle(
             backgroundColor: WidgetStateProperty.resolveWith(

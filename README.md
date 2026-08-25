@@ -8,12 +8,13 @@ This repository currently contains the local-first Flutter MVP:
 - English puzzle content based on the supplied logic-grid references.
 - Responsive Flutter UI for web, macOS, and iOS targets.
 - Official suspect placement mode.
-- Victim placement as a required character, followed by murderer selection and answer checking.
+- Victim placement as a required character; the victim's room contains exactly one suspect, who is the murderer.
 - Sudoku-style candidate-note mode with fixed 3×3 note slots and uppercase initials.
+- Manual X-mark mode and undo for official placements, including note restoration.
 - All clues visible together in the case panel.
 - Named room divisions with thick room borders and room labels on each board.
 - Object cells for chairs, beds, tables, plants, windows, televisions, bookshelves, statues, boxes, and fireplaces, with an occupancy legend.
-- Local solution checking, including the murderer reveal after an incorrect accusation.
+- Local accusation submission with celebration feedback for correct answers and guidance after incorrect accusations.
 - Rules available from the home screen and from the info button in the bottom-left footer of an open case.
 - Search/magnifying-glass browser favicon using the Murdoku palette.
 

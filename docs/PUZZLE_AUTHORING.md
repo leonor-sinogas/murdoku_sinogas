@@ -28,13 +28,15 @@ slot for every suspect plus the victim. A case is complete only when all of
 those characters have official placements.
 
 The murderer is not a separately placed entity. After the board is complete,
-the app identifies the suspect who shares the victim’s named room. The player
-selects an accusation, and the checker reports whether it is correct.
+the victim must share a room with exactly one suspect; that suspect is the
+murderer. The player selects an accusation, and the checker reports whether it
+is correct.
 
 ## Rooms and objects
 
 `layoutFor` divides every board into four named rooms. `objectsFor` maps blocked
-cells to object types. Occupiable objects are chairs, beds, and windows;
+cells to object types and reconciles those placements with the objects named by
+each clue. Occupiable objects are chairs, beds, and windows;
 non-occupiable objects include tables, plants, televisions, bookshelves,
 statues, boxes, and fireplaces.
 
@@ -67,9 +69,12 @@ When adding or changing a case:
 2. Keep suspect names and clues alphabetically ordered.
 3. Add a room layout covering every cell.
 4. Ensure every object relationship is in the referenced character’s room.
-5. Keep windows on perimeter cells and verify chair/bed adjacency rules.
-6. Add or update the solution and blocked cells.
-7. Run `flutter analyze`, `flutter test`, and `flutter build web --release`.
+5. Ensure every object named by a clue is present; `beside` and `in front of`
+   relationships must use adjacent cells in the same room.
+6. Ensure the victim’s room contains exactly one suspect.
+7. Keep windows on perimeter cells and verify chair/bed adjacency rules.
+8. Add or update the solution and blocked cells.
+9. Run `flutter analyze`, `flutter test`, and `flutter build web --release`.
 
 Do not add credentials, deployment configuration containing secrets, or
 production infrastructure files to the local MVP.

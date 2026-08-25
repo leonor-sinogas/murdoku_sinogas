@@ -2,7 +2,7 @@
 
 ## Goal
 
-Each case contains a grid divided into rooms or areas, a victim, and a group of suspects. Every character, including the victim, occupies one available cell. The player uses the clues to determine every character’s location. The victim must share a room with at least one suspect; that suspect is the murderer.
+Each case contains a grid divided into rooms or areas, a victim, and a group of suspects. Every character, including the victim, occupies one available cell. The player uses the clues to determine every character’s location. The victim must share a room with exactly one suspect; that suspect is the murderer.
 
 The home screen orders the current cases from easier to more involved and assigns visible case numbers sequentially. It now contains the original ten cases plus twenty new cases: The Museum After Dark, The Sleeper Car, The County Courthouse, The Garden Party, The Night Clinic, The Recording Studio, The Harbor Ferry, The Boarding School, The Grand Theater, The Research Annex, The Lakeside Cottage, The Executive Retreat, The Bakery Before Dawn, The Penthouse Party, The Natural History Wing, The Harvest Supper, The Casino Floor, The Independent Bookshop, The Beach House Weekend, and The Hotel Convention.
 
@@ -16,8 +16,9 @@ The **Rules** button on the home screen opens a full-screen rules page. While a 
    - **Place person**: tap an open cell to make the suspect’s official placement. A cell can contain only one official occupant.
    - **Add notes**: tap a cell to toggle that suspect as a candidate.
 4. Candidate notes use fixed Sudoku-style slots. The first suspect is always in slot 1, the second in slot 2, and so on. Empty slots remain empty; notes never shift around.
-5. Select the suspect you think is the murderer.
-6. Tap **Check solution** after placing every character. The result checks both the board and the accusation; an incorrect accusation reveals the correct murderer.
+5. Use **Mark X** to add personal elimination marks. These are separate from automatic row/column eliminations caused by official placements.
+6. Use **Undo** to remove the last official placement and restore the notes and personal marks that existed before it.
+7. Select the suspect you think is the murderer and tap **Submit accusation**. A correct answer shows a celebration; an incorrect accusation tells you to revisit the clues.
 
 ## Board objects and rooms
 
@@ -63,7 +64,7 @@ notes.
 ## Planned gameplay improvements
 
 - Persist progress per signed-in user through the API.
-- Add undo/redo and clear-cell actions.
+- Add redo and clear-cell actions.
 - Model room/division boundaries and object adjacency as first-class puzzle data.
 - Validate clue consistency server-side when levels are authored.
 - Store completion time, attempts, and optional hints.

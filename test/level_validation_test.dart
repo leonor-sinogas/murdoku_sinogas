@@ -22,6 +22,25 @@ void main() {
           .toSet();
       final boardCellCount = level.gridSize * level.gridSize;
 
+      for (final clue in level.clues) {
+        final person = cluePersonName(clue, level);
+        if (person == null || objectNamesInClue(clue).isEmpty) continue;
+        final personCell = answer[person];
+        expect(personCell, isNotNull, reason: '${level.name}: $clue');
+        final personRoom = layout.roomAt(personCell!);
+        for (final objectName in objectNamesInClue(clue)) {
+          expect(
+            objects.entries.any(
+              (entry) =>
+                  entry.value.name == objectName &&
+                  layout.roomAt(entry.key) == personRoom,
+            ),
+            isTrue,
+            reason: '${level.name}: missing $objectName for $clue',
+          );
+        }
+      }
+
       for (final entry in objects.entries) {
         final roomName = layout.roomAt(entry.key).toLowerCase();
         if (entry.value.name == 'Bed') {
@@ -53,11 +72,11 @@ void main() {
       expect(answer.keys, contains(level.victim), reason: level.name);
       final victimRoom = layout.roomAt(answer[level.victim]!);
       expect(
-        level.suspects.any(
-          (suspect) => layout.roomAt(answer[suspect]!) == victimRoom,
-        ),
-        isTrue,
-        reason: '${level.name}: victim is alone in a room',
+        level.suspects
+                .where((suspect) => layout.roomAt(answer[suspect]!) == victimRoom)
+                .length,
+        1,
+        reason: '${level.name}: victim room must contain exactly one suspect',
       );
       expect(
         objectCluesMatch(level, answer),
@@ -120,7 +139,9 @@ void main() {
       expect(
         solutionCells.every((cell) {
           final object = objects[cell];
-          return !level.blocked.contains(cell) || object?.occupiable == true;
+          return (!level.blocked.contains(cell) &&
+                  object?.occupiable != false) ||
+              object?.occupiable == true;
         }),
         isTrue,
         reason: '${level.name}: solution uses a blocked cell',

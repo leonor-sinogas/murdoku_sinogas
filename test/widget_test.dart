@@ -19,6 +19,6 @@ void main() {
     expect(find.text('Vacation House'), findsOneWidget);
     expect(find.text('CHARACTERS'), findsOneWidget);
     expect(find.text('Arianna'), findsWidgets);
-    expect(find.text('CHECK SOLUTION'), findsOneWidget);
+    expect(find.text('SUBMIT ACCUSATION'), findsOneWidget);
   });
 }
