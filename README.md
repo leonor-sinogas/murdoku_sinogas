@@ -19,6 +19,7 @@ This repository currently contains the local-first Flutter MVP:
 - Rules available from the home screen and from the info button in the bottom-left footer of an open case.
 - Search/magnifying-glass browser favicon using the Murdoku palette.
 - Puzzle 1 omits Arianna's redundant row clue because the television relationship already determines her row while preserving a unique solution.
+- A top-right theme selector supports Light, Dark, and System appearance modes across the app.
 
 The requested FastAPI backend, authentication, PostgreSQL service, AWS infrastructure, persistent accounts, and production deployment are documented as the next architecture phase but are not implemented or deployed yet.
 
@@ -43,7 +44,8 @@ python3 -m http.server 8090 --directory build/web
 
 Open <http://localhost:8090>.
 
-The app is intentionally local-only at this stage. No command in the normal local workflow deploys to AWS.
+The Flutter frontend is deployed through the private `murdoku` S3 bucket and a
+dedicated CloudFront distribution. Backend services remain unimplemented.
 
 ## Project map
 

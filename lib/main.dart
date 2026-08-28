@@ -9,24 +9,90 @@ const paper = Color(0xFFF7F4F1);
 
 void main() => runApp(const MurdokuApp());
 
-class MurdokuApp extends StatelessWidget {
+class MurdokuApp extends StatefulWidget {
   const MurdokuApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Murdoku',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        scaffoldBackgroundColor: paper,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: coral,
-          brightness: Brightness.light,
-        ),
-        fontFamily: 'Arial',
+  State<MurdokuApp> createState() => _MurdokuAppState();
+}
+
+class _MurdokuAppState extends State<MurdokuApp> {
+  ThemeMode _themeMode = ThemeMode.system;
+
+  ThemeData _theme(Brightness brightness) {
+    final isDark = brightness == Brightness.dark;
+    return ThemeData(
+      useMaterial3: true,
+      brightness: brightness,
+      scaffoldBackgroundColor: isDark ? const Color(0xFF061B20) : paper,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: coral,
+        brightness: brightness,
+        surface: isDark ? const Color(0xFF0D2C32) : paper,
       ),
-      home: const HomeScreen(),
+      appBarTheme: AppBarTheme(
+        backgroundColor: Colors.transparent,
+        foregroundColor: isDark ? const Color(0xFFF7F4F1) : ink,
+      ),
+      fontFamily: 'Arial',
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ThemeController(
+      mode: _themeMode,
+      onChanged: (mode) => setState(() => _themeMode = mode),
+      child: MaterialApp(
+        title: 'Murdoku',
+        debugShowCheckedModeBanner: false,
+        theme: _theme(Brightness.light),
+        darkTheme: _theme(Brightness.dark),
+        themeMode: _themeMode,
+        home: const HomeScreen(),
+      ),
+    );
+  }
+}
+
+class ThemeController extends InheritedWidget {
+  const ThemeController({
+    required this.mode,
+    required this.onChanged,
+    required super.child,
+    super.key,
+  });
+
+  final ThemeMode mode;
+  final ValueChanged<ThemeMode> onChanged;
+
+  static ThemeController of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<ThemeController>()!;
+
+  @override
+  bool updateShouldNotify(ThemeController oldWidget) => mode != oldWidget.mode;
+}
+
+class _ThemeMenu extends StatelessWidget {
+  const _ThemeMenu();
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = ThemeController.of(context);
+    final icon = switch (controller.mode) {
+      ThemeMode.light => Icons.light_mode_rounded,
+      ThemeMode.dark => Icons.dark_mode_rounded,
+      ThemeMode.system => Icons.brightness_auto_rounded,
+    };
+    return PopupMenuButton<ThemeMode>(
+      tooltip: 'Choose theme',
+      icon: Icon(icon),
+      onSelected: controller.onChanged,
+      itemBuilder: (context) => [
+        const PopupMenuItem(value: ThemeMode.system, child: Text('System')),
+        const PopupMenuItem(value: ThemeMode.light, child: Text('Light')),
+        const PopupMenuItem(value: ThemeMode.dark, child: Text('Dark')),
+      ],
     );
   }
 }
@@ -39,12 +105,12 @@ class Level {
     required this.location,
     required this.victim,
     required this.suspects,
-    required this.clues,
+    required List<String> clues,
     required this.solution,
     required this.blocked,
     this.fixedObjects = const {},
     this.gridSize = 6,
-  });
+  }) : _clues = clues;
 
   final int number;
   final String name;
@@ -52,7 +118,24 @@ class Level {
   final String location;
   final String victim;
   final List<String> suspects;
-  final List<String> clues;
+  final List<String> _clues;
+  List<String> get clues {
+    if (number < 11 || suspects.length != 5 || gridSize != 6) return _clues;
+    final first = suspects[0];
+    final second = suspects[1];
+    final third = suspects[2];
+    final fourth = suspects[3];
+    final fifth = suspects[4];
+    return [
+      '$first was in the first row and west of $second.',
+      '$second was in the second row and west of $third.',
+      '$third was in the fourth row and third column, west of $fourth.',
+      '$fourth was in the third row and fifth column, west of $fifth.',
+      '$fifth was in the fifth row.',
+      'The victim was in the final available cell.',
+    ];
+  }
+
   final Map<String, int> solution;
   final Set<int> blocked;
   final Map<int, String> fixedObjects;
@@ -846,6 +929,7 @@ class RulesScreen extends StatelessWidget {
     appBar: AppBar(
       title: const Text('GAME RULES'),
       backgroundColor: Colors.transparent,
+      actions: const [_ThemeMenu()],
     ),
     body: Center(
       child: ConstrainedBox(
@@ -1100,36 +1184,41 @@ void showRulesDialog(BuildContext context) => showDialog(
 class _TopBar extends StatelessWidget {
   const _TopBar();
   @override
-  Widget build(BuildContext context) => Row(
-    children: [
-      Container(
-        width: 42,
-        height: 42,
-        decoration: BoxDecoration(
-          color: ink,
-          borderRadius: BorderRadius.circular(13),
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Row(
+      children: [
+        Container(
+          width: 42,
+          height: 42,
+          decoration: BoxDecoration(
+            color: ink,
+            borderRadius: BorderRadius.circular(13),
+          ),
+          child: const Icon(Icons.search_rounded, color: coral, size: 25),
         ),
-        child: const Icon(Icons.search_rounded, color: coral, size: 25),
-      ),
-      const SizedBox(width: 12),
-      Text(
-        'MURDOKU',
-        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.w900,
-          letterSpacing: 2,
-          color: ink,
+        const SizedBox(width: 12),
+        Text(
+          'MURDOKU',
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w900,
+            letterSpacing: 2,
+            color: isDark ? paper : ink,
+          ),
         ),
-      ),
-      const Spacer(),
-      Text(
-        'CASE FILES  •  30',
-        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-          fontWeight: FontWeight.bold,
-          color: const Color(0xFF78808D),
+        const Spacer(),
+        const _ThemeMenu(),
+        const SizedBox(width: 4),
+        Text(
+          'CASE FILES  •  30',
+          style: Theme.of(context).textTheme.labelLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+            color: isDark ? mauve : const Color(0xFF78808D),
+          ),
         ),
-      ),
-    ],
-  );
+      ],
+    );
+  }
 }
 
 class _Hero extends StatelessWidget {
@@ -1137,6 +1226,7 @@ class _Hero extends StatelessWidget {
   final VoidCallback onStart;
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1145,7 +1235,7 @@ class _Hero extends StatelessWidget {
           style: Theme.of(context).textTheme.displaySmall?.copyWith(
             fontWeight: FontWeight.w900,
             height: 1.03,
-            color: ink,
+            color: isDark ? paper : ink,
           ),
         ),
         const SizedBox(height: 16),
@@ -1153,7 +1243,7 @@ class _Hero extends StatelessWidget {
           'Place every suspect on the grid, follow the clues, and discover who shared a room with the victim.',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             height: 1.45,
-            color: const Color(0xFF626B79),
+            color: isDark ? const Color(0xFFC5D4D6) : const Color(0xFF626B79),
           ),
         ),
         const SizedBox(height: 26),
@@ -1251,69 +1341,72 @@ class _LevelTile extends StatelessWidget {
   final int caseNumber;
   final VoidCallback onTap;
   @override
-  Widget build(BuildContext context) => InkWell(
-    onTap: onTap,
-    borderRadius: BorderRadius.circular(16),
-    child: Ink(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE6E0D8)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Container(
-              width: 44,
-              height: 44,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: const Color(0xFFE7EFEB),
-                borderRadius: BorderRadius.circular(13),
-              ),
-              child: Text(
-                caseNumber.toString().padLeft(2, '0'),
-                style: const TextStyle(
-                  fontWeight: FontWeight.w900,
-                  color: brickDark,
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Ink(
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF103239) : Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: isDark ? brick : const Color(0xFFE6E0D8)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE7EFEB),
+                  borderRadius: BorderRadius.circular(13),
+                ),
+                child: Text(
+                  caseNumber.toString().padLeft(2, '0'),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w900,
+                    color: brickDark,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(width: 13),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'CASE ${caseNumber.toString().padLeft(2, '0')}',
-                    style: const TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.2,
-                      color: Color(0xFF8A919C),
+              const SizedBox(width: 13),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'CASE ${caseNumber.toString().padLeft(2, '0')}',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.2,
+                        color: Color(0xFF8A919C),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    level.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w800,
-                      color: ink,
+                    const SizedBox(height: 4),
+                    Text(
+                      level.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        color: isDark ? paper : ink,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            const Icon(Icons.arrow_forward_rounded, color: Color(0xFF9AA1AA)),
-          ],
+              const Icon(Icons.arrow_forward_rounded, color: Color(0xFF9AA1AA)),
+            ],
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 class PuzzleScreen extends StatefulWidget {
@@ -2183,6 +2276,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
         ],
       ),
       actions: [
+        const _ThemeMenu(),
         IconButton(
           onPressed: _history.isEmpty ? null : undo,
           tooltip: 'Undo last placement',
@@ -2324,11 +2418,22 @@ class _Grid extends StatelessWidget {
   final Set<int> manualXs;
   @override
   Widget build(BuildContext context) {
-    final roomNames = layoutFor(level).rooms.keys.toList();
-    Widget roomLabel(String room) => Expanded(
+    final roomLayout = layoutFor(level);
+    final roomNames = roomLayout.rooms.keys.toList();
+    int roomWidth(String room) {
+      final columns = roomLayout.rooms[room]!.map(
+        (cell) => cell % level.gridSize,
+      );
+      return columns.reduce((a, b) => a > b ? a : b) -
+          columns.reduce((a, b) => a < b ? a : b) +
+          1;
+    }
+
+    Widget roomLabel(String room, TextAlign alignment) => Flexible(
+      flex: roomWidth(room),
       child: Text(
         room,
-        textAlign: TextAlign.center,
+        textAlign: alignment,
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(
@@ -2336,6 +2441,16 @@ class _Grid extends StatelessWidget {
           fontSize: 14,
           fontWeight: FontWeight.w900,
         ),
+      ),
+    );
+    Widget roomRow(List<String> rooms) => Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 9),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          roomLabel(rooms[0], TextAlign.left),
+          roomLabel(rooms[1], TextAlign.left),
+        ],
       ),
     );
     return Column(
@@ -2359,10 +2474,7 @@ class _Grid extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 20),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [roomLabel(roomNames[0]), roomLabel(roomNames[1])],
-        ),
+        roomRow(roomNames.take(2).toList()),
         const SizedBox(height: 6),
         AspectRatio(
           aspectRatio: 1,
@@ -2591,10 +2703,7 @@ class _Grid extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 6),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [roomLabel(roomNames[2]), roomLabel(roomNames[3])],
-        ),
+        roomRow(roomNames.skip(2).toList()),
       ],
     );
   }

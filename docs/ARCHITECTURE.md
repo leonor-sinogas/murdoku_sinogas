@@ -7,14 +7,14 @@ This document describes the requested production architecture. It is a target de
 ```text
 Flutter client (macOS / iOS / web)
        |
-       | HTTPS: world-connect-api.alicenbob.com
+       | HTTPS: murdoku-api.alicenbob.com (future backend)
        v
 Caddy + FastAPI containers on EC2 t4g.micro
        |
        v
 Containerized PostgreSQL with persistent volume and backups
 
-Flutter web build -> private S3 bucket world-connect -> CloudFront
+Flutter web build -> private S3 bucket murdoku -> CloudFront
 Namecheap DNS -> CloudFront and API endpoints
 ```
 
@@ -22,8 +22,9 @@ Namecheap DNS -> CloudFront and API endpoints
 
 - Flutter is the shared client technology.
 - Web artifacts are built with `flutter build web --release`.
-- The S3 bucket `world-connect` must remain private.
-- CloudFront should be the only public delivery path for `world-connect.alicenbob.com`.
+- The S3 bucket `murdoku` remains private and is readable only by its dedicated
+  CloudFront distribution through Origin Access Control.
+- CloudFront is the only public delivery path for `murdoku.alicenbob.com`.
 - Use immutable or versioned asset names where possible, with short/no-cache behavior for the HTML shell and long-lived caching for hashed assets.
 - ACM wildcard certificate: `*.alicenbob.com`, provisioned in the AWS region required by CloudFront.
 
@@ -55,12 +56,15 @@ Namecheap DNS -> CloudFront and API endpoints
 
 ## DNS and TLS
 
-Namecheap records should point:
+Namecheap records point:
 
-- `world-connect.alicenbob.com` to the CloudFront distribution.
-- `world-connect-api.alicenbob.com` to the API entry point.
+- `murdoku.alicenbob.com` to `dawjoi11ujhz9.cloudfront.net`.
+- `murdoku-api.alicenbob.com` to the future API entry point.
 
-CloudFront uses the ACM wildcard certificate. Caddy uses a trusted certificate for the API hostname and redirects HTTP to HTTPS. All client API calls must use HTTPS.
+CloudFront reuses the issued `*.alicenbob.com` ACM certificate and redirects HTTP
+to HTTPS. The distribution is protected by a dedicated WAF ACL and writes
+access logs to a private dedicated log bucket. Caddy will use a trusted
+certificate for the future API hostname; all client API calls must use HTTPS.
 
 ## Deployment profile and operational workflow
 
@@ -75,4 +79,6 @@ The requested AWS profile is `alicenbob-sso`. Deployment automation should:
 7. Run health checks and smoke tests.
 8. Record the release version and migration status.
 
-No production deployment should be run until the backend, database migrations, secrets, backups, DNS, certificates, and rollback procedure are implemented and reviewed.
+The frontend is deployed. No backend deployment should be run until the backend,
+database migrations, secrets, backups, and rollback procedure are implemented
+and reviewed.
