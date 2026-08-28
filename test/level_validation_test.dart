@@ -10,6 +10,86 @@ void main() {
     );
   });
 
+  test('visible puzzle one has one uniquely fixed suspect solution', () {
+    final level = levels.firstWhere((level) => level.number == 2);
+    final fixedPositions = positionCluesFor(level);
+    expect(fixedPositions, isEmpty);
+    for (final suspect in level.suspects) {
+      final clues = level.clues.where(
+        (clue) => clue.toLowerCase().startsWith(suspect.toLowerCase()),
+      );
+      final coordinateReferences = clues
+          .map((clue) => RegExp(r'\b(row|column)\b').allMatches(clue).length)
+          .fold<int>(0, (total, count) => total + count);
+      expect(
+        coordinateReferences,
+        suspect == 'Colleen' ? 1 : 0,
+        reason: '$suspect has unnecessary direct coordinate information',
+      );
+    }
+    expect(level.fixedObjects, containsPair(34, 'Television'));
+    expect(level.fixedObjects, containsPair(19, 'Bed'));
+    expect(level.fixedObjects, containsPair(25, 'Bed'));
+
+    final layout = layoutFor(level);
+    final objects = objectsFor(level);
+    final available = <int>[
+      for (var cell = 0; cell < level.gridSize * level.gridSize; cell++)
+        if (!level.blocked.contains(cell) || objects[cell]?.occupiable == true)
+          cell,
+    ];
+    final assignments = <String, int>{};
+    final usedRows = <int>{};
+    final usedColumns = <int>{};
+    var solutionCount = 0;
+
+    bool adjacentToObject(int cell, String objectName) => objects.entries.any(
+      (entry) =>
+          entry.value.name == objectName &&
+          layout.roomAt(entry.key) == layout.roomAt(cell) &&
+          _testCellsAreAdjacent(cell, entry.key, level.gridSize),
+    );
+
+    void search(int index) {
+      if (index == level.suspects.length) {
+        solutionCount++;
+        return;
+      }
+      final suspect = level.suspects[index];
+      for (final cell in available) {
+        final row = cell ~/ level.gridSize;
+        final column = cell % level.gridSize;
+        if (usedRows.contains(row) || usedColumns.contains(column)) continue;
+        final object = objects[cell];
+        final valid = switch (suspect) {
+          'Arianna' => adjacentToObject(cell, 'Television'),
+          'Brycen' => object?.name == 'Chair',
+          'Colleen' => layout.roomAt(cell) == 'Bathroom' && row == 2,
+          'Dan' => object?.name == 'Bed' && adjacentToObject(cell, 'Plant'),
+          'Evan' => adjacentToObject(cell, 'Bed'),
+          _ => true,
+        };
+        if (!valid) continue;
+        assignments[suspect] = cell;
+        usedRows.add(row);
+        usedColumns.add(column);
+        search(index + 1);
+        usedRows.remove(row);
+        usedColumns.remove(column);
+        assignments.remove(suspect);
+      }
+    }
+
+    search(0);
+    expect(solutionCount, 1);
+    expect(assignments, isEmpty);
+  });
+
+  test('test adjacency helper sanity check', () {
+    expect(_testCellsAreAdjacent(19, 20, 6), isTrue);
+    expect(_testCellsAreAdjacent(19, 26, 6), isFalse);
+  });
+
   test('every case solution satisfies the board rules', () {
     for (final level in levels) {
       final layout = layoutFor(level);
@@ -73,8 +153,8 @@ void main() {
       final victimRoom = layout.roomAt(answer[level.victim]!);
       expect(
         level.suspects
-                .where((suspect) => layout.roomAt(answer[suspect]!) == victimRoom)
-                .length,
+            .where((suspect) => layout.roomAt(answer[suspect]!) == victimRoom)
+            .length,
         1,
         reason: '${level.name}: victim room must contain exactly one suspect',
       );
@@ -160,4 +240,12 @@ void main() {
       );
     }
   });
+}
+
+bool _testCellsAreAdjacent(int first, int second, int size) {
+  final firstRow = first ~/ size;
+  final firstColumn = first % size;
+  final secondRow = second ~/ size;
+  final secondColumn = second % size;
+  return (firstRow - secondRow).abs() + (firstColumn - secondColumn).abs() == 1;
 }

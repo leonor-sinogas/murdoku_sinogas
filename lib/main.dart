@@ -42,6 +42,7 @@ class Level {
     required this.clues,
     required this.solution,
     required this.blocked,
+    this.fixedObjects = const {},
     this.gridSize = 6,
   });
 
@@ -54,6 +55,7 @@ class Level {
   final List<String> clues;
   final Map<String, int> solution;
   final Set<int> blocked;
+  final Map<int, String> fixedObjects;
   final int gridSize;
 }
 
@@ -86,16 +88,16 @@ const levels = <Level>[
       'Eduardo was not sitting and was not in the bathroom.',
     ],
     solution: {
-      'Andre': 0,
+      'Andre': 9,
       'Bethany': 19,
-      'Clyde': 11,
+      'Clyde': 2,
       'Delilah': 35,
       'Eduardo': 40,
       'Felicia': 50,
-      'Greg': 57,
+      'Greg': 60,
       'Helena': 70,
     },
-    blocked: {1, 2, 4, 13, 22, 31, 39, 49, 56, 58, 67, 76, 79},
+    blocked: {1, 2, 4, 13, 22, 31, 39, 49, 56, 67, 76, 79},
   ),
   Level(
     number: 2,
@@ -105,15 +107,34 @@ const levels = <Level>[
     victim: 'Virgil',
     suspects: ['Arianna', 'Brycen', 'Colleen', 'Dan', 'Evan'],
     clues: [
-      'Brycen was sitting in a chair.',
       'Arianna was beside a television.',
-      'Colleen was in the bathroom.',
+      'Brycen was sitting in a chair.',
+      'Colleen was in the bathroom and in the third row.',
       'Dan was beside a plant and was in a bed.',
       'Evan was beside a bed.',
       'The victim was in the last available cell.',
     ],
-    solution: {'Arianna': 35, 'Brycen': 6, 'Colleen': 15, 'Dan': 19, 'Evan': 26},
-    blocked: {0, 3, 9, 12, 16, 18, 19, 25, 26, 28, 29, 34},
+    solution: {
+      'Arianna': 35,
+      'Brycen': 6,
+      'Colleen': 15,
+      'Dan': 19,
+      'Evan': 26,
+    },
+    blocked: {0, 3, 9, 12, 16, 17, 18, 19, 20, 25, 28, 29, 34},
+    fixedObjects: {
+      6: 'Chair',
+      9: 'Table',
+      16: 'Table',
+      17: 'Table',
+      18: 'Plant',
+      19: 'Bed',
+      24: 'Table',
+      25: 'Bed',
+      28: 'Table',
+      33: 'Table',
+      34: 'Television',
+    },
   ),
   Level(
     number: 3,
@@ -130,7 +151,7 @@ const levels = <Level>[
       'Evelyn was beside a television.',
       'The victim was in the last available cell.',
     ],
-    solution: {'Aaron': 2, 'Bruno': 15, 'Clara': 10, 'Donna': 24, 'Evelyn': 35},
+    solution: {'Aaron': 2, 'Bruno': 15, 'Clara': 11, 'Donna': 24, 'Evelyn': 34},
     blocked: {1, 4, 6, 11, 13, 16, 22, 25, 28, 30, 35},
   ),
   Level(
@@ -208,7 +229,7 @@ const levels = <Level>[
       'Cora was north of Dylan.',
       'Dylan was in front of a window.',
       'Mae was beside a plant.',
-      'Silas was not in the main hall.',
+      'Silas was not in the Main Gallery.',
       'The victim was in the last available cell.',
     ],
     solution: {
@@ -1647,6 +1668,15 @@ Map<int, BoardObject> objectsFor(Level level) {
     result[cell] = choices[(index + level.number) % choices.length];
   }
 
+  if (level.fixedObjects.isNotEmpty) {
+    for (final entry in level.fixedObjects.entries) {
+      result[entry.key] = objects.firstWhere(
+        (object) => object.name == entry.value,
+      );
+    }
+    return result;
+  }
+
   // Object placement is clue-aware. The old rotating assignment could put a
   // television, window, or plant somewhere unrelated to the clue that names
   // it (or omit that object entirely). Every referenced object is now placed
@@ -1659,21 +1689,66 @@ Map<int, BoardObject> objectsFor(Level level) {
     if (objectName == null || personCell == null) continue;
     final object = objects.firstWhere((item) => item.name == objectName);
     final room = layout.roomAt(personCell);
+    final sharesWindowCell =
+        object.name == 'Window' &&
+        RegExp(
+          r'\b(beside|in front of)\b',
+          caseSensitive: false,
+        ).hasMatch(clue);
+    final direction = RegExp(
+      r'\b(east|west|north|south) of (?:the )?',
+      caseSensitive: false,
+    ).firstMatch(clue)?.group(1)?.toLowerCase();
+    bool directionMatches(int cell) {
+      if (direction == null) return true;
+      final personRow = personCell ~/ size;
+      final personColumn = personCell % size;
+      final objectRow = cell ~/ size;
+      final objectColumn = cell % size;
+      return switch (direction) {
+        'east' => personColumn > objectColumn,
+        'west' => personColumn < objectColumn,
+        'north' => personRow < objectRow,
+        _ => personRow > objectRow,
+      };
+    }
+
     final adjacent = <int>[];
     for (var cell = 0; cell < size * size; cell++) {
-      if (solutionCells.contains(cell) || layout.roomAt(cell) != room) continue;
-      if (!_cellsAreAdjacent(personCell, cell, size)) continue;
+      final sharesCell = sharesWindowCell && cell == personCell;
+      if ((solutionCells.contains(cell) && !sharesCell) ||
+          layout.roomAt(cell) != room) {
+        continue;
+      }
+      if (!sharesCell &&
+          directionMatches(cell) &&
+          !_cellsAreAdjacent(personCell, cell, size)) {
+        continue;
+      }
+      if (!sharesCell && !directionMatches(cell)) continue;
+      if (!sharesCell &&
+          direction == null &&
+          !_cellsAreAdjacent(personCell, cell, size)) {
+        continue;
+      }
       if (object.name == 'Window' && !isOutsideWall(cell)) continue;
       adjacent.add(cell);
     }
     final fallback = <int>[];
     for (var cell = 0; cell < size * size; cell++) {
-      if (solutionCells.contains(cell) || layout.roomAt(cell) != room) continue;
+      final sharesCell = sharesWindowCell && cell == personCell;
+      if ((solutionCells.contains(cell) && !sharesCell) ||
+          layout.roomAt(cell) != room) {
+        continue;
+      }
       if (result[cell] != null && result[cell]!.name != objectName) continue;
       if (object.name == 'Window' && !isOutsideWall(cell)) continue;
+      if (!directionMatches(cell)) continue;
       fallback.add(cell);
     }
-    final openAdjacent = adjacent.where((cell) => result[cell] == null).toList();
+    final openAdjacent = adjacent
+        .where((cell) => result[cell] == null)
+        .toList();
     final candidates = openAdjacent.isNotEmpty
         ? openAdjacent
         : adjacent.isNotEmpty
@@ -1681,7 +1756,8 @@ Map<int, BoardObject> objectsFor(Level level) {
         : fallback;
     if (candidates.isNotEmpty) {
       final preferred = candidates.where(level.blocked.contains).toList();
-      result[preferred.isNotEmpty ? preferred.first : candidates.first] = object;
+      result[preferred.isNotEmpty ? preferred.first : candidates.first] =
+          object;
     }
   }
 
@@ -1737,6 +1813,35 @@ String? cluePersonName(String clue, Level level) {
   return null;
 }
 
+Map<String, int> positionCluesFor(Level level) {
+  const ordinals = {
+    'first': 1,
+    'second': 2,
+    'third': 3,
+    'fourth': 4,
+    'fifth': 5,
+    'sixth': 6,
+    'seventh': 7,
+    'eighth': 8,
+    'ninth': 9,
+  };
+  final positions = <String, int>{};
+  final pattern = RegExp(
+    r'^(\w+) was in the (\w+) row and (\w+) column\.',
+    caseSensitive: false,
+  );
+  for (final clue in level.clues) {
+    final match = pattern.firstMatch(clue);
+    if (match == null) continue;
+    final row = ordinals[match.group(2)!.toLowerCase()];
+    final column = ordinals[match.group(3)!.toLowerCase()];
+    if (row != null && column != null) {
+      positions[match.group(1)!] = (row - 1) * level.gridSize + column - 1;
+    }
+  }
+  return positions;
+}
+
 bool _cellsAreAdjacent(int first, int second, int size) {
   final firstRow = first ~/ size;
   final firstColumn = first % size;
@@ -1765,13 +1870,15 @@ bool objectCluesMatch(Level level, Map<String, int> solution) {
           )
           .map((entry) => entry.key);
       if (!matchingCells.any(
-        (cell) => _cellsAreAdjacent(personCell, cell, level.gridSize),
+        (cell) =>
+            cell == personCell ||
+            _cellsAreAdjacent(personCell, cell, level.gridSize),
       )) {
         return false;
       }
     }
     final match = RegExp(
-      r'^(\w+) was beside an? (\w+) and was in an? (chair|bed)\.',
+      r'^(\w+) was beside an? (\w+).*?\bwas in an? (chair|bed)\b',
       caseSensitive: false,
     ).firstMatch(clue);
     if (match == null) continue;
@@ -1792,7 +1899,8 @@ bool objectCluesMatch(Level level, Map<String, int> solution) {
     }
     if (seatObject == null || referencedCell == null) return false;
     if (layout.roomAt(personCell) != layout.roomAt(referencedCell) ||
-        !_cellsAreAdjacent(personCell, referencedCell, level.gridSize)) {
+        (referencedCell != personCell &&
+            !_cellsAreAdjacent(personCell, referencedCell, level.gridSize))) {
       return false;
     }
   }
@@ -1880,6 +1988,43 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
     });
   }
 
+  void clearPuzzle() {
+    showDialog<void>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Start this puzzle over?'),
+        content: const Text(
+          'This will remove every placement, note, and personal X mark from the current puzzle.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(context);
+              setState(() {
+                placed.updateAll((key, value) => null);
+                for (final noteSet in notes.values) {
+                  noteSet.clear();
+                }
+                manualXs.clear();
+                _history.clear();
+                activeSuspect = null;
+                selectedMurderer = null;
+                notesMode = false;
+                xMode = false;
+                checked = false;
+              });
+            },
+            child: const Text('Start over'),
+          ),
+        ],
+      ),
+    );
+  }
+
   void tapCell(int cell) {
     final object = objectsFor(widget.level)[cell];
     final blocked =
@@ -1943,7 +2088,9 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
         context: context,
         builder: (_) => const AlertDialog(
           title: Text('Choose a suspect'),
-          content: Text('Select who you think the murderer is, then submit your accusation.'),
+          content: Text(
+            'Select who you think the murderer is, then submit your accusation.',
+          ),
         ),
       );
       return;
@@ -1972,12 +2119,14 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
         placed.entries.every((entry) => answer[entry.key] == entry.value);
     final murderer = murdererFor(widget.level, answer);
     final murdererCorrect = selectedMurderer == murderer;
+    final murdererFound = complete && victimHasRoommate && murdererCorrect;
+    final exactSolve = correct && murdererCorrect;
     setState(() => checked = true);
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         title: Text(
-          correct && murdererCorrect
+          murdererFound
               ? 'Congratulations!'
               : complete && !murdererCorrect
               ? '$selectedMurderer was not the murderer'
@@ -1987,13 +2136,17 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
               ? 'Not quite'
               : 'Keep investigating',
         ),
-        content: correct && murdererCorrect
-            ? const Column(
+        content: murdererFound
+            ? Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('🎉  🎊  🎉', style: TextStyle(fontSize: 34)),
-                  SizedBox(height: 12),
-                  Text('You found the murderer!'),
+                  const Text('🎉  🎊  🎉', style: TextStyle(fontSize: 34)),
+                  const SizedBox(height: 12),
+                  Text(
+                    exactSolve
+                        ? 'You found the murderer!'
+                        : 'You found the murderer in a peculiar way. Not everyone is in the correct spot, but you still got it!',
+                  ),
                 ],
               )
             : Text(
@@ -2034,6 +2187,11 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
           onPressed: _history.isEmpty ? null : undo,
           tooltip: 'Undo last placement',
           icon: const Icon(Icons.undo_rounded),
+        ),
+        IconButton(
+          onPressed: clearPuzzle,
+          tooltip: 'Clear puzzle',
+          icon: const Icon(Icons.restart_alt_rounded),
         ),
         TextButton(onPressed: check, child: const Text('SUBMIT ACCUSATION')),
       ],
@@ -2126,8 +2284,8 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
                   child: Text(
                     activeSuspect == null
                         ? xMode
-                            ? 'Tap cells to add or remove your own X marks.'
-                            : 'Select a suspect, then choose a cell. Tap a placed suspect to remove it.'
+                              ? 'Tap cells to add or remove your own X marks.'
+                              : 'Select a suspect, then choose a cell. Tap a placed suspect to remove it.'
                         : notesMode
                         ? 'Tap cells to add or remove a candidate note for $activeSuspect.'
                         : 'Tap an open cell to place $activeSuspect.',
@@ -2165,259 +2323,281 @@ class _Grid extends StatelessWidget {
   final bool xMode;
   final Set<int> manualXs;
   @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        level.location.toUpperCase(),
+  Widget build(BuildContext context) {
+    final roomNames = layoutFor(level).rooms.keys.toList();
+    Widget roomLabel(String room) => Expanded(
+      child: Text(
+        room,
+        textAlign: TextAlign.center,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
         style: const TextStyle(
-          fontSize: 12,
+          color: Colors.black,
+          fontSize: 14,
           fontWeight: FontWeight.w900,
-          letterSpacing: 2,
-          color: brickDark,
         ),
       ),
-      const SizedBox(height: 8),
-      Text(
-        level.name,
-        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-          fontWeight: FontWeight.w900,
-          color: ink,
+    );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          level.location.toUpperCase(),
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 2,
+            color: brickDark,
+          ),
         ),
-      ),
-      const SizedBox(height: 20),
-      AspectRatio(
-        aspectRatio: 1,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final layout = layoutFor(level);
-            return Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(9),
-                  decoration: BoxDecoration(
-                    color: ink,
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  child: GridView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: level.gridSize,
+        const SizedBox(height: 8),
+        Text(
+          level.name,
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+            fontWeight: FontWeight.w900,
+            color: ink,
+          ),
+        ),
+        const SizedBox(height: 20),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [roomLabel(roomNames[0]), roomLabel(roomNames[1])],
+        ),
+        const SizedBox(height: 6),
+        AspectRatio(
+          aspectRatio: 1,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final layout = layoutFor(level);
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(9),
+                    decoration: BoxDecoration(
+                      color: ink,
+                      borderRadius: BorderRadius.circular(18),
                     ),
-                    itemCount: level.gridSize * level.gridSize,
-                    itemBuilder: (context, index) {
-                      final objects = objectsFor(level);
-                      final name = occupantAt(index);
-                      final cellNotes = notes[index] ?? <String>{};
-                      final room = layout.roomAt(index);
-                      final object = objects[index];
-                      final blocked =
-                          (level.blocked.contains(index) ||
-                              object != null && !object.occupiable) &&
-                          !(object?.occupiable ?? false);
-                      final row = index ~/ level.gridSize;
-                      final column = index % level.gridSize;
-                      final eliminatedByPlacement =
-                          name == null &&
-                          !blocked &&
-                          placed.values.any(
-                            (cell) =>
-                                cell != null &&
-                                ((cell ~/ level.gridSize) == row ||
-                                    (cell % level.gridSize) == column),
-                          );
-                      final topRoom = layout.roomAt(index - level.gridSize);
-                      final leftRoom = index % level.gridSize == 0
-                          ? ''
-                          : layout.roomAt(index - 1);
-                      final rightRoom =
-                          index % level.gridSize == level.gridSize - 1
-                          ? ''
-                          : layout.roomAt(index + 1);
-                      final bottomRoom = layout.roomAt(index + level.gridSize);
-                      final border = Border(
-                        top: BorderSide(
-                          color: topRoom == room ? mauve : brickDark,
-                          width: topRoom == room ? 1 : 3,
-                        ),
-                        right: BorderSide(
-                          color: rightRoom == room ? mauve : brickDark,
-                          width: rightRoom == room ? 1 : 3,
-                        ),
-                        bottom: BorderSide(
-                          color: bottomRoom == room ? mauve : brickDark,
-                          width: bottomRoom == room ? 1 : 3,
-                        ),
-                        left: BorderSide(
-                          color: leftRoom == room ? mauve : brickDark,
-                          width: leftRoom == room ? 1 : 3,
-                        ),
-                      );
-                      return GestureDetector(
-                        onTap: () => onCellTap(index),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 150),
-                          margin: EdgeInsets.zero,
-                          decoration: BoxDecoration(
-                            color: blocked
-                                ? const Color(0xFFE1E4E5)
-                                : name != null
-                                ? coral
-                                : notesMode && activeSuspect != null
-                                ? const Color(0xFFF1E2E4)
-                                : xMode
-                                ? const Color(0xFFE7EFEB)
-                                : paper,
-                            borderRadius: BorderRadius.zero,
-                            border: border,
+                    child: GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: level.gridSize,
+                      ),
+                      itemCount: level.gridSize * level.gridSize,
+                      itemBuilder: (context, index) {
+                        final objects = objectsFor(level);
+                        final name = occupantAt(index);
+                        final cellNotes = notes[index] ?? <String>{};
+                        final room = layout.roomAt(index);
+                        final object = objects[index];
+                        final blocked =
+                            (level.blocked.contains(index) ||
+                                object != null && !object.occupiable) &&
+                            !(object?.occupiable ?? false);
+                        final row = index ~/ level.gridSize;
+                        final column = index % level.gridSize;
+                        final eliminatedByPlacement =
+                            name == null &&
+                            !blocked &&
+                            placed.values.any(
+                              (cell) =>
+                                  cell != null &&
+                                  ((cell ~/ level.gridSize) == row ||
+                                      (cell % level.gridSize) == column),
+                            );
+                        final topRoom = layout.roomAt(index - level.gridSize);
+                        final leftRoom = index % level.gridSize == 0
+                            ? ''
+                            : layout.roomAt(index - 1);
+                        final rightRoom =
+                            index % level.gridSize == level.gridSize - 1
+                            ? ''
+                            : layout.roomAt(index + 1);
+                        final bottomRoom = layout.roomAt(
+                          index + level.gridSize,
+                        );
+                        final border = Border(
+                          top: BorderSide(
+                            color: topRoom == room ? mauve : brickDark,
+                            width: topRoom == room ? 1 : 3,
                           ),
-                          child: Stack(
-                            children: [
-                              Center(
-                                child: name != null
-                                    ? Text(
-                                        name.substring(0, 1),
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w900,
-                                          color: ink,
-                                          fontSize: 20,
-                                        ),
-                                      )
-                                    : object != null &&
-                                          (!object.occupiable || !notesMode)
-                                    ? Tooltip(
-                                        message:
-                                            '${object.name} — ${object.occupiable ? 'can be occupied' : 'cannot be occupied'}',
-                                        child: Icon(
-                                          object.icon,
-                                          color: brickDark.withValues(
-                                            alpha: .8,
+                          right: BorderSide(
+                            color: rightRoom == room ? mauve : brickDark,
+                            width: rightRoom == room ? 1 : 3,
+                          ),
+                          bottom: BorderSide(
+                            color: bottomRoom == room ? mauve : brickDark,
+                            width: bottomRoom == room ? 1 : 3,
+                          ),
+                          left: BorderSide(
+                            color: leftRoom == room ? mauve : brickDark,
+                            width: leftRoom == room ? 1 : 3,
+                          ),
+                        );
+                        return GestureDetector(
+                          onTap: () => onCellTap(index),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 150),
+                            margin: EdgeInsets.zero,
+                            decoration: BoxDecoration(
+                              color: blocked
+                                  ? const Color(0xFFE1E4E5)
+                                  : name != null
+                                  ? coral
+                                  : notesMode && activeSuspect != null
+                                  ? const Color(0xFFF1E2E4)
+                                  : xMode
+                                  ? const Color(0xFFE7EFEB)
+                                  : paper,
+                              borderRadius: BorderRadius.zero,
+                              border: border,
+                            ),
+                            child: Stack(
+                              children: [
+                                Center(
+                                  child: name != null
+                                      ? Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            if (object != null)
+                                              Icon(
+                                                object.icon,
+                                                color: brickDark.withValues(
+                                                  alpha: .45,
+                                                ),
+                                                size: 28,
+                                              ),
+                                            Text(
+                                              name.substring(0, 1),
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.w900,
+                                                color: ink,
+                                                fontSize: 20,
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : object != null &&
+                                            (!object.occupiable || !notesMode)
+                                      ? Tooltip(
+                                          message:
+                                              '${object.name} — ${object.occupiable ? 'can be occupied' : 'cannot be occupied'}',
+                                          child: Icon(
+                                            object.icon,
+                                            color: brickDark.withValues(
+                                              alpha: .8,
+                                            ),
+                                            size: 38,
                                           ),
-                                          size: 38,
-                                        ),
-                                      )
-                                    : blocked
-                                    ? const Icon(
-                                        Icons.close_rounded,
-                                        color: mauve,
-                                        size: 17,
-                                      )
-                                    : Padding(
-                                        padding: const EdgeInsets.all(3),
-                                        child: Column(
-                                          children: List.generate(
-                                            3,
-                                            (row) => Expanded(
-                                              child: Row(
-                                                children: List.generate(3, (
-                                                  column,
-                                                ) {
-                                                  final noteIndex =
-                                                      row * 3 + column;
-                                                  final candidate =
-                                                      noteIndex <
-                                                          level.suspects.length
-                                                      ? level
-                                                            .suspects[noteIndex]
-                                                      : null;
-                                                  return Expanded(
-                                                    child: Center(
-                                                      child: Text(
-                                                        candidate != null &&
-                                                                cellNotes
-                                                                    .contains(
-                                                                      candidate,
+                                        )
+                                      : blocked
+                                      ? const Icon(
+                                          Icons.close_rounded,
+                                          color: mauve,
+                                          size: 17,
+                                        )
+                                      : Padding(
+                                          padding: const EdgeInsets.all(3),
+                                          child: Column(
+                                            children: List.generate(
+                                              3,
+                                              (row) => Expanded(
+                                                child: Row(
+                                                  children: List.generate(3, (
+                                                    column,
+                                                  ) {
+                                                    final noteIndex =
+                                                        row * 3 + column;
+                                                    final candidate =
+                                                        noteIndex <
+                                                            level
+                                                                .suspects
+                                                                .length
+                                                        ? level
+                                                              .suspects[noteIndex]
+                                                        : null;
+                                                    return Expanded(
+                                                      child: Center(
+                                                        child: Text(
+                                                          candidate != null &&
+                                                                  cellNotes
+                                                                      .contains(
+                                                                        candidate,
+                                                                      )
+                                                              ? candidate
+                                                                    .substring(
+                                                                      0,
+                                                                      1,
                                                                     )
-                                                            ? candidate
-                                                                  .substring(
-                                                                    0,
-                                                                    1,
-                                                                  )
-                                                                  .toUpperCase()
-                                                            : '',
-                                                        style: const TextStyle(
-                                                          color: brickDark,
-                                                          fontSize: 9,
-                                                          fontWeight:
-                                                              FontWeight.w900,
+                                                                    .toUpperCase()
+                                                              : '',
+                                                          style:
+                                                              const TextStyle(
+                                                                color:
+                                                                    brickDark,
+                                                                fontSize: 9,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w900,
+                                                              ),
                                                         ),
                                                       ),
-                                                    ),
-                                                  );
-                                                }),
+                                                    );
+                                                  }),
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                              ),
-                              if (eliminatedByPlacement)
-                                Positioned.fill(
-                                  child: IgnorePointer(
-                                    child: Center(
-                                      child: Icon(
-                                        Icons.close_rounded,
-                                        color: brickDark.withValues(alpha: .24),
-                                        size: 24,
+                                ),
+                                if (eliminatedByPlacement)
+                                  Positioned.fill(
+                                    child: IgnorePointer(
+                                      child: Center(
+                                        child: Icon(
+                                          Icons.close_rounded,
+                                          color: brickDark.withValues(
+                                            alpha: .24,
+                                          ),
+                                          size: 24,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              if (manualXs.contains(index))
-                                Positioned.fill(
-                                  child: IgnorePointer(
-                                    child: Center(
-                                      child: Icon(
-                                        Icons.close_rounded,
-                                        color: brickDark.withValues(alpha: .3),
-                                        size: 25,
+                                if (manualXs.contains(index))
+                                  Positioned.fill(
+                                    child: IgnorePointer(
+                                      child: Center(
+                                        child: Icon(
+                                          Icons.close_rounded,
+                                          color: brickDark.withValues(
+                                            alpha: .3,
+                                          ),
+                                          size: 25,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                ...layout.rooms.entries.map((entry) {
-                  final firstCell = entry.value.reduce((a, b) => a < b ? a : b);
-                  final left = firstCell % level.gridSize < level.gridSize / 2
-                      ? 6.0
-                      : constraints.maxWidth / 2 + 6;
-                  final top = firstCell ~/ level.gridSize < level.gridSize / 2
-                      ? -26.0
-                      : constraints.maxHeight + 5;
-                  return Positioned(
-                    left: left,
-                    top: top,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 7,
-                        vertical: 3,
-                      ),
-                      color: paper,
-                      child: Text(
-                        entry.key,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
+                        );
+                      },
                     ),
-                  );
-                }),
-              ],
-            );
-          },
+                  ),
+                ],
+              );
+            },
+          ),
         ),
-      ),
-    ],
-  );
+        const SizedBox(height: 6),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [roomLabel(roomNames[2]), roomLabel(roomNames[3])],
+        ),
+      ],
+    );
+  }
 }
 
 class _ObjectLegendItem extends StatelessWidget {
@@ -2630,7 +2810,13 @@ class _Clues extends StatelessWidget {
               icon: Icon(Icons.close_rounded),
             ),
           ],
-          selected: {xMode ? 'x' : notesMode ? 'notes' : 'place'},
+          selected: {
+            xMode
+                ? 'x'
+                : notesMode
+                ? 'notes'
+                : 'place',
+          },
           onSelectionChanged: (selection) => onModeChanged(selection.first),
           style: ButtonStyle(
             backgroundColor: WidgetStateProperty.resolveWith(

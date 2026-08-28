@@ -10,13 +10,15 @@ This repository currently contains the local-first Flutter MVP:
 - Official suspect placement mode.
 - Victim placement as a required character; the victim's room contains exactly one suspect, who is the murderer.
 - Sudoku-style candidate-note mode with fixed 3×3 note slots and uppercase initials.
-- Manual X-mark mode and undo for official placements, including note restoration.
+- Manual X-mark mode, undo with note restoration, and a confirmed clear/restart control.
 - All clues visible together in the case panel.
 - Named room divisions with thick room borders and room labels on each board.
+- Room labels are outside the grid, aligned with their corresponding room sections; no room name occupies a puzzle cell.
 - Object cells for chairs, beds, tables, plants, windows, televisions, bookshelves, statues, boxes, and fireplaces, with an occupancy legend.
 - Local accusation submission with celebration feedback for correct answers and guidance after incorrect accusations.
 - Rules available from the home screen and from the info button in the bottom-left footer of an open case.
 - Search/magnifying-glass browser favicon using the Murdoku palette.
+- Puzzle 1 omits Arianna's redundant row clue because the television relationship already determines her row while preserving a unique solution.
 
 The requested FastAPI backend, authentication, PostgreSQL service, AWS infrastructure, persistent accounts, and production deployment are documented as the next architecture phase but are not implemented or deployed yet.
 

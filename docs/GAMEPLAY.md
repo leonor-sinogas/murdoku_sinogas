@@ -18,11 +18,16 @@ The **Rules** button on the home screen opens a full-screen rules page. While a 
 4. Candidate notes use fixed Sudoku-style slots. The first suspect is always in slot 1, the second in slot 2, and so on. Empty slots remain empty; notes never shift around.
 5. Use **Mark X** to add personal elimination marks. These are separate from automatic row/column eliminations caused by official placements.
 6. Use **Undo** to remove the last official placement and restore the notes and personal marks that existed before it.
-7. Select the suspect you think is the murderer and tap **Submit accusation**. A correct answer shows a celebration; an incorrect accusation tells you to revisit the clues.
+7. Use **Clear puzzle** beside Undo to restart the current case after confirmation.
+8. Select the suspect you think is the murderer and tap **Submit accusation**. A correct answer shows a celebration; an incorrect accusation tells you to revisit the clues.
+
+The accusation is checked independently from the exact character placements. If
+the murderer is identified while some other characters are misplaced, the game
+still celebrates the deduction and explains that it was found in a peculiar way.
 
 ## Board objects and rooms
 
-Every case board is divided into four named rooms. Thick borders mark room boundaries, and each room name is shown on its board. The board guide explains object behavior:
+Every case board is divided into four named rooms. Thick borders mark room boundaries. Room names are displayed outside the grid, aligned above the upper rooms and below the lower rooms; no room name is drawn inside a puzzle cell. The board guide explains object behavior:
 
 - Chairs, beds, and windows are occupiable cells. Their cells can receive an
   official character placement or candidate notes. Windows only appear next to
@@ -44,6 +49,10 @@ If a clue says a character is beside an object and seated or lying in a chair
 or bed, the occupied chair/bed and referenced object must be adjacent cells in
 the same room. A character cannot satisfy both parts when those objects are
 separated or across a room boundary.
+
+Puzzle 1 intentionally omits redundant coordinates. Arianna's television clue
+already leaves only one viable adjacent cell, so an additional row clue would
+add no deduction and is not shown.
 
 ## Data model in the MVP
 
