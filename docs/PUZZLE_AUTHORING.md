@@ -50,6 +50,7 @@ nearby object across a thick border does not satisfy the clue.
 - All clues are shown together and ordered by character name.
 - Place mode creates or removes an official character placement.
 - Notes mode toggles uppercase character initials in fixed Sudoku-style slots.
+- In notes mode, chairs, beds, and windows remain visible beneath the initials.
 - Official placement removes that character’s notes everywhere.
 - Row and column elimination X marks are translucent overlays, so they do not
   hide object icons.
@@ -60,8 +61,11 @@ nearby object across a thick border does not satisfy the clue.
 
 The current second set contains twenty additional six-by-six cases numbered
 11 through 30. They use four named three-by-three rooms, five suspects, and a
-victim derived from the final valid cell. Their room names and themes vary,
-but the same coordinate, object, and deduction rules apply.
+victim derived from the final valid cell. Their room names and themes vary.
+Their clues are object-led: four unique object relationships and one
+single-coordinate/object-direction clue. Do not give a character both a row
+and a column, and do not replace these cases with a repeated people-to-people
+direction chain.
 
 When adding or changing a case:
 
@@ -75,6 +79,10 @@ When adding or changing a case:
 7. Keep windows on perimeter cells and verify chair/bed adjacency rules.
 8. Add or update the solution and blocked cells.
 9. Run `flutter analyze`, `flutter test`, and `flutter build web --release`.
+
+For object-led cases, add an exhaustive uniqueness test when the clue pattern
+or object anchors change. The existing validation suite proves the current
+cases 11–30 each have exactly one suspect placement.
 
 Do not add credentials, deployment configuration containing secrets, or
 production infrastructure files to the local MVP.

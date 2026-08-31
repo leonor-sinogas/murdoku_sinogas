@@ -32,6 +32,8 @@ The current widget tests verify:
 - Windows are on outside-wall cells.
 - East/west/north/south clues agree with the board compass.
 - Combined chair/bed and beside-object clues use adjacent cells in the same room.
+- Cases 11–30 have exactly one suspect placement under their displayed
+  object-led clue sets.
 
 The permanent tests live in `test/level_validation_test.dart` and
 `test/widget_test.dart`. Add tests for note toggling, official placement

@@ -27,13 +27,15 @@ still celebrates the deduction and explains that it was found in a peculiar way.
 
 ## Board objects and rooms
 
-Every case board is divided into four named rooms. Thick borders mark room boundaries. Room names are displayed outside the grid, aligned above the upper rooms and below the lower rooms; no room name is drawn inside a puzzle cell. The board guide explains object behavior:
+Every case board is divided into four named rooms. Thick borders mark room boundaries. Room names are displayed outside the grid, above the upper rooms and below the lower rooms. The first room label in each row is anchored to the board's left edge; the second is anchored to the board's right edge. No room name is drawn inside a puzzle cell. The board guide explains object behavior:
 
 - Chairs, beds, and windows are occupiable cells. Their cells can receive an
   official character placement or candidate notes. Windows only appear next to
   an outside wall of the board.
 - Tables, plants, televisions, bookshelves, statues, boxes, and fireplaces are blocked cells and cannot receive a character or note.
 - Hovering an object on web shows whether it can be occupied.
+
+In **Add notes** mode, occupiable furniture and windows remain visible as subtle icons beneath the candidate initials. This preserves the object context without obscuring the Sudoku-style notes.
 
 Room and object layouts are currently local case data and will become server-delivered level metadata in the backend phase.
 
@@ -53,6 +55,11 @@ separated or across a room boundary.
 Puzzle 1 intentionally omits redundant coordinates. Arianna's television clue
 already leaves only one viable adjacent cell, so an additional row clue would
 add no deduction and is not shown.
+
+Cases 11–30 use varied, object-led clues rather than a repeated coordinate
+chain. Four clues identify unique visible objects; a final clue combines a
+single useful row with an object direction. No character is given both a row
+and a column in these cases.
 
 ## Data model in the MVP
 

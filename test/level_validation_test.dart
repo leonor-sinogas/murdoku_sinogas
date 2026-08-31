@@ -85,6 +85,75 @@ void main() {
     expect(assignments, isEmpty);
   });
 
+  test('object-led cases have one suspect placement', () {
+    for (final level in levels.where((level) => level.number >= 11)) {
+      final layout = layoutFor(level);
+      final objects = objectsFor(level);
+      final available = <int>[
+        for (var cell = 0; cell < level.gridSize * level.gridSize; cell++)
+          if (!level.blocked.contains(cell) ||
+              objects[cell]?.occupiable == true)
+            cell,
+      ];
+      final assignments = <String, int>{};
+      final usedRows = <int>{};
+      final usedColumns = <int>{};
+      var solutionCount = 0;
+
+      bool besideObject(int cell, String name) => objects.entries.any(
+        (entry) =>
+            entry.value.name == name &&
+            layout.roomAt(entry.key) == layout.roomAt(cell) &&
+            _testCellsAreAdjacent(cell, entry.key, level.gridSize),
+      );
+
+      bool eastOfObject(int cell, String name) => objects.entries.any(
+        (entry) =>
+            entry.value.name == name &&
+            layout.roomAt(entry.key) == layout.roomAt(cell) &&
+            cell % level.gridSize > entry.key % level.gridSize,
+      );
+
+      final clueObjects = <String>[
+        for (final clue in level.clues.take(5)) objectNamesInClue(clue).single,
+      ];
+
+      void search(int index) {
+        if (index == level.suspects.length) {
+          solutionCount++;
+          return;
+        }
+        final suspect = level.suspects[index];
+        for (final cell in available) {
+          final row = cell ~/ level.gridSize;
+          final column = cell % level.gridSize;
+          if (usedRows.contains(row) || usedColumns.contains(column)) continue;
+          final valid = switch (index) {
+            0 => objects[cell]?.name == 'Chair',
+            1 || 2 || 3 => besideObject(cell, clueObjects[index]),
+            4 => row == 4 && eastOfObject(cell, clueObjects[index]),
+            _ => false,
+          };
+          if (!valid) continue;
+          assignments[suspect] = cell;
+          usedRows.add(row);
+          usedColumns.add(column);
+          search(index + 1);
+          usedRows.remove(row);
+          usedColumns.remove(column);
+          assignments.remove(suspect);
+        }
+      }
+
+      search(0);
+      expect(
+        solutionCount,
+        1,
+        reason: '${level.name} should be uniquely solvable',
+      );
+    }
+  });
+
   test('test adjacency helper sanity check', () {
     expect(_testCellsAreAdjacent(19, 20, 6), isTrue);
     expect(_testCellsAreAdjacent(19, 26, 6), isFalse);

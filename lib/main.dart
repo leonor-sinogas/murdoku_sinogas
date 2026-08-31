@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 
-const ink = Color(0xFF072D33);
-const mauve = Color(0xFF9ABCAB);
+const ink = Color(0xFF12324A);
+const mauve = Color(0xFFA9D6E5);
 const coral = Color(0xFF8F5C64);
-const brick = Color(0xFF3A7564);
+const brick = Color(0xFF4A90B9);
 const brickDark = Color(0xFF33091B);
 const paper = Color(0xFFF7F4F1);
+
+bool isDarkMode(BuildContext context) =>
+    Theme.of(context).brightness == Brightness.dark;
+
+Color appForeground(BuildContext context) =>
+    Theme.of(context).colorScheme.onSurface;
+
+Color appSurface(BuildContext context) =>
+    isDarkMode(context) ? const Color(0xFF10233F) : Colors.white;
 
 void main() => runApp(const MurdokuApp());
 
@@ -24,11 +33,11 @@ class _MurdokuAppState extends State<MurdokuApp> {
     return ThemeData(
       useMaterial3: true,
       brightness: brightness,
-      scaffoldBackgroundColor: isDark ? const Color(0xFF061B20) : paper,
+      scaffoldBackgroundColor: isDark ? const Color(0xFF081426) : paper,
       colorScheme: ColorScheme.fromSeed(
-        seedColor: coral,
+        seedColor: isDark ? const Color(0xFF2563EB) : coral,
         brightness: brightness,
-        surface: isDark ? const Color(0xFF0D2C32) : paper,
+        surface: isDark ? const Color(0xFF10233F) : paper,
       ),
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
@@ -119,27 +128,68 @@ class Level {
   final String victim;
   final List<String> suspects;
   final List<String> _clues;
-  List<String> get clues {
-    if (number < 11 || suspects.length != 5 || gridSize != 6) return _clues;
-    final first = suspects[0];
-    final second = suspects[1];
-    final third = suspects[2];
-    final fourth = suspects[3];
-    final fifth = suspects[4];
-    return [
-      '$first was in the first row and west of $second.',
-      '$second was in the second row and west of $third.',
-      '$third was in the fourth row and third column, west of $fourth.',
-      '$fourth was in the third row and fifth column, west of $fifth.',
-      '$fifth was in the fifth row.',
-      'The victim was in the final available cell.',
-    ];
-  }
+  List<String> get clues =>
+      number >= 11 && suspects.length == 5 && gridSize == 6
+      ? _objectLedClues(this)
+      : _clues;
 
   final Map<String, int> solution;
   final Set<int> blocked;
   final Map<int, String> fixedObjects;
   final int gridSize;
+}
+
+// Cases 11–30 use object-led deductions instead of a repeated chain of
+// coordinates. The first four clues each identify a different object; the
+// final clue supplies one useful row plus an object direction. Keeping each
+// referenced object unique makes every clue meaningful without revealing both
+// coordinates of any character.
+const _objectClueRotations = <List<String>>[
+  ['Plant', 'Statue', 'Bookshelf', 'Table'],
+  ['Statue', 'Television', 'Plant', 'Bookshelf'],
+  ['Bookshelf', 'Plant', 'Table', 'Statue'],
+  ['Table', 'Bookshelf', 'Statue', 'Plant'],
+  ['Television', 'Table', 'Plant', 'Bookshelf'],
+];
+
+List<String> _objectClueNamesFor(Level level) {
+  // A table or plant would be out of place in this case's bathroom.
+  if (level.number == 21) {
+    return const ['Statue', 'Bookshelf', 'Television', 'Box'];
+  }
+  return _objectClueRotations[(level.number - 11) %
+      _objectClueRotations.length];
+}
+
+List<String> _objectLedClues(Level level) {
+  final objects = _objectClueNamesFor(level);
+  final first = level.suspects[0];
+  final second = level.suspects[1];
+  final third = level.suspects[2];
+  final fourth = level.suspects[3];
+  final fifth = level.suspects[4];
+  return [
+    '$first was seated in a chair.',
+    '$second was beside a ${objects[0].toLowerCase()}.',
+    '$third was beside a ${objects[1].toLowerCase()}.',
+    '$fourth was beside a ${objects[2].toLowerCase()}.',
+    '$fifth was in the fifth row and east of a ${objects[3].toLowerCase()}.',
+    'The victim was in the final available cell.',
+  ];
+}
+
+bool _usesObjectLedClues(Level level) =>
+    level.number >= 11 && level.suspects.length == 5 && level.gridSize == 6;
+
+Map<int, String> _objectClueAnchorsFor(Level level) {
+  final objects = _objectClueNamesFor(level);
+  return {
+    level.solution[level.suspects[0]]!: 'Chair',
+    6: objects[0],
+    19: objects[1],
+    17: objects[2],
+    28: objects[3],
+  };
 }
 
 const levels = <Level>[
@@ -875,7 +925,7 @@ class HomeScreen extends StatelessWidget {
                     'Your case files',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.w800,
-                      color: ink,
+                      color: appForeground(context),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -944,155 +994,158 @@ class _RulesContent extends StatelessWidget {
   const _RulesContent();
 
   @override
-  Widget build(BuildContext context) => SingleChildScrollView(
-    padding: const EdgeInsets.fromLTRB(28, 12, 28, 36),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'How to solve a case',
-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.w900,
-            color: ink,
+  Widget build(BuildContext context) {
+    final foreground = appForeground(context);
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(28, 12, 28, 36),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'How to solve a case',
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+              fontWeight: FontWeight.w900,
+              color: foreground,
+            ),
           ),
-        ),
-        const SizedBox(height: 9),
-        const Text(
-          'Use the clues to place every suspect in a unique available cell. The victim must share a room with exactly one suspect; that suspect is the murderer.',
-          style: TextStyle(color: ink, fontSize: 16, height: 1.4),
-        ),
-        const SizedBox(height: 22),
-        const _RuleStep(
-          number: '1',
-          title: 'Read the clues',
-          body:
-              'All clues are shown together in every case. Look for room names, objects, directions, and whether a person is seated. Object relationships only count when the person and object are in the same room.',
-        ),
-        const _RuleStep(
-          number: '2',
-          title: 'Choose a suspect',
-          body:
-              'Select a suspect chip in the case panel, then choose how you want to mark the board.',
-        ),
-        const _RuleStep(
-          number: '3',
-          title: 'Place or note',
-          body:
-              'Place person makes an official placement. Add notes toggles a small candidate initial in that cell without committing the suspect.',
-        ),
-        const _RuleStep(
-          number: '4',
-          title: 'Finish the grid',
-          body:
-              'Each suspect occupies one row, one column, and one available cell. The victim’s room must contain exactly one suspect. Thick borders separate the named rooms.',
-        ),
-        const SizedBox(height: 14),
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(
-            color: const Color(0xFFE7EFEB),
-            borderRadius: BorderRadius.circular(16),
+          const SizedBox(height: 9),
+          Text(
+            'Use the clues to place every suspect in a unique available cell. The victim must share a room with exactly one suspect; that suspect is the murderer.',
+            style: TextStyle(color: foreground, fontSize: 16, height: 1.4),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'OBJECT GUIDE',
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1.4,
-                  color: brickDark,
+          const SizedBox(height: 22),
+          const _RuleStep(
+            number: '1',
+            title: 'Read the clues',
+            body:
+                'All clues are shown together in every case. Look for room names, objects, directions, and whether a person is seated. Object relationships only count when the person and object are in the same room.',
+          ),
+          const _RuleStep(
+            number: '2',
+            title: 'Choose a suspect',
+            body:
+                'Select a suspect chip in the case panel, then choose how you want to mark the board.',
+          ),
+          const _RuleStep(
+            number: '3',
+            title: 'Place or note',
+            body:
+                'Place person makes an official placement. Add notes toggles a small candidate initial in that cell without committing the suspect.',
+          ),
+          const _RuleStep(
+            number: '4',
+            title: 'Finish the grid',
+            body:
+                'Each suspect occupies one row, one column, and one available cell. The victim’s room must contain exactly one suspect. Thick borders separate the named rooms.',
+          ),
+          const SizedBox(height: 14),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(18),
+            decoration: BoxDecoration(
+              color: const Color(0xFFE7F3FA),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'OBJECT GUIDE',
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: 1.4,
+                    color: brickDark,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 7),
-              const Text(
-                'Chairs, beds, and windows can be occupied. Every other object cell is blocked and cannot receive an official placement or note.',
-                style: TextStyle(color: ink, height: 1.35),
-              ),
-              const SizedBox(height: 14),
-              Wrap(
-                spacing: 12,
-                runSpacing: 10,
-                children: [
-                  _ObjectLegendItem(
-                    object: const BoardObject(
-                      'Chair',
-                      Icons.weekend,
-                      occupiable: true,
+                const SizedBox(height: 7),
+                const Text(
+                  'Chairs, beds, and windows can be occupied. Every other object cell is blocked and cannot receive an official placement or note.',
+                  style: TextStyle(color: ink, height: 1.35),
+                ),
+                const SizedBox(height: 14),
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 10,
+                  children: [
+                    _ObjectLegendItem(
+                      object: const BoardObject(
+                        'Chair',
+                        Icons.weekend,
+                        occupiable: true,
+                      ),
                     ),
-                  ),
-                  _ObjectLegendItem(
-                    object: const BoardObject(
-                      'Bed',
-                      Icons.bed,
-                      occupiable: true,
+                    _ObjectLegendItem(
+                      object: const BoardObject(
+                        'Bed',
+                        Icons.bed,
+                        occupiable: true,
+                      ),
                     ),
-                  ),
-                  _ObjectLegendItem(
-                    object: const BoardObject(
-                      'Table',
-                      Icons.table_restaurant,
-                      occupiable: false,
+                    _ObjectLegendItem(
+                      object: const BoardObject(
+                        'Table',
+                        Icons.table_restaurant,
+                        occupiable: false,
+                      ),
                     ),
-                  ),
-                  _ObjectLegendItem(
-                    object: const BoardObject(
-                      'Plant',
-                      Icons.local_florist,
-                      occupiable: false,
+                    _ObjectLegendItem(
+                      object: const BoardObject(
+                        'Plant',
+                        Icons.local_florist,
+                        occupiable: false,
+                      ),
                     ),
-                  ),
-                  _ObjectLegendItem(
-                    object: const BoardObject(
-                      'Window',
-                      Icons.window,
-                      occupiable: true,
+                    _ObjectLegendItem(
+                      object: const BoardObject(
+                        'Window',
+                        Icons.window,
+                        occupiable: true,
+                      ),
                     ),
-                  ),
-                  _ObjectLegendItem(
-                    object: const BoardObject(
-                      'Television',
-                      Icons.tv,
-                      occupiable: false,
+                    _ObjectLegendItem(
+                      object: const BoardObject(
+                        'Television',
+                        Icons.tv,
+                        occupiable: false,
+                      ),
                     ),
-                  ),
-                  _ObjectLegendItem(
-                    object: const BoardObject(
-                      'Bookshelf',
-                      Icons.menu_book,
-                      occupiable: false,
+                    _ObjectLegendItem(
+                      object: const BoardObject(
+                        'Bookshelf',
+                        Icons.menu_book,
+                        occupiable: false,
+                      ),
                     ),
-                  ),
-                  _ObjectLegendItem(
-                    object: const BoardObject(
-                      'Statue',
-                      Icons.auto_awesome,
-                      occupiable: false,
+                    _ObjectLegendItem(
+                      object: const BoardObject(
+                        'Statue',
+                        Icons.auto_awesome,
+                        occupiable: false,
+                      ),
                     ),
-                  ),
-                  _ObjectLegendItem(
-                    object: const BoardObject(
-                      'Box',
-                      Icons.inventory_2,
-                      occupiable: false,
+                    _ObjectLegendItem(
+                      object: const BoardObject(
+                        'Box',
+                        Icons.inventory_2,
+                        occupiable: false,
+                      ),
                     ),
-                  ),
-                  _ObjectLegendItem(
-                    object: const BoardObject(
-                      'Fireplace',
-                      Icons.local_fire_department,
-                      occupiable: false,
+                    _ObjectLegendItem(
+                      object: const BoardObject(
+                        'Fireplace',
+                        Icons.local_fire_department,
+                        occupiable: false,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }
 
 class _RuleStep extends StatelessWidget {
@@ -1106,45 +1159,51 @@ class _RuleStep extends StatelessWidget {
   final String body;
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: 14),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          width: 30,
-          height: 30,
-          alignment: Alignment.center,
-          decoration: const BoxDecoration(color: coral, shape: BoxShape.circle),
-          child: Text(
-            number,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w900,
+  Widget build(BuildContext context) {
+    final foreground = appForeground(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 30,
+            height: 30,
+            alignment: Alignment.center,
+            decoration: const BoxDecoration(
+              color: coral,
+              shape: BoxShape.circle,
+            ),
+            child: Text(
+              number,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w900,
+              ),
             ),
           ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  color: brickDark,
-                  fontWeight: FontWeight.w900,
-                  fontSize: 16,
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: foreground,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 16,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 3),
-              Text(body, style: const TextStyle(color: ink, height: 1.35)),
-            ],
+                const SizedBox(height: 3),
+                Text(body, style: TextStyle(color: foreground, height: 1.35)),
+              ],
+            ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }
 
 void showRulesDialog(BuildContext context) => showDialog(
@@ -1163,7 +1222,7 @@ void showRulesDialog(BuildContext context) => showDialog(
                   'GAME RULES',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w900,
-                    color: ink,
+                    color: appForeground(context),
                   ),
                 ),
                 const Spacer(),
@@ -1342,15 +1401,14 @@ class _LevelTile extends StatelessWidget {
   final VoidCallback onTap;
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Ink(
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF103239) : Colors.white,
+          color: ink,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: isDark ? brick : const Color(0xFFE6E0D8)),
+          border: Border.all(color: mauve.withValues(alpha: .62)),
         ),
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -1361,14 +1419,14 @@ class _LevelTile extends StatelessWidget {
                 height: 44,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE7EFEB),
+                  color: coral,
                   borderRadius: BorderRadius.circular(13),
                 ),
                 child: Text(
                   caseNumber.toString().padLeft(2, '0'),
                   style: const TextStyle(
                     fontWeight: FontWeight.w900,
-                    color: brickDark,
+                    color: Colors.white,
                   ),
                 ),
               ),
@@ -1384,7 +1442,7 @@ class _LevelTile extends StatelessWidget {
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 1.2,
-                        color: Color(0xFF8A919C),
+                        color: Colors.white.withValues(alpha: .76),
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -1392,15 +1450,15 @@ class _LevelTile extends StatelessWidget {
                       level.name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.w800,
-                        color: isDark ? paper : ink,
+                        color: Colors.white,
                       ),
                     ),
                   ],
                 ),
               ),
-              const Icon(Icons.arrow_forward_rounded, color: Color(0xFF9AA1AA)),
+              const Icon(Icons.arrow_forward_rounded, color: Colors.white),
             ],
           ),
         ),
@@ -1770,6 +1828,27 @@ Map<int, BoardObject> objectsFor(Level level) {
     return result;
   }
 
+  if (_usesObjectLedClues(level)) {
+    // These object anchors are deliberately unique. They give the object-led
+    // clues a precise, visible basis without exposing a character's row and
+    // column together. Remove accidental duplicates from the rotating board
+    // decoration before placing the anchors.
+    final anchors = _objectClueAnchorsFor(level);
+    final referenced = anchors.values.toSet();
+    result.removeWhere(
+      (cell, object) =>
+          referenced.contains(object.name) &&
+          !anchors.containsKey(cell) &&
+          !solutionCells.contains(cell),
+    );
+    for (final entry in anchors.entries) {
+      result[entry.key] = objects.firstWhere(
+        (object) => object.name == entry.value,
+      );
+    }
+    return result;
+  }
+
   // Object placement is clue-aware. The old rotating assignment could put a
   // television, window, or plant somewhere unrelated to the clue that names
   // it (or omit that object entirely). Every referenced object is now placed
@@ -1968,6 +2047,36 @@ bool objectCluesMatch(Level level, Map<String, int> solution) {
             _cellsAreAdjacent(personCell, cell, level.gridSize),
       )) {
         return false;
+      }
+    }
+    final directionalObjectRelation = RegExp(
+      r'^(\w+) was .*?\b(east|west|north|south) of (?:an? |the )?(\w+)',
+      caseSensitive: false,
+    ).firstMatch(clue);
+    if (directionalObjectRelation != null) {
+      final personCell = solution[directionalObjectRelation.group(1)!];
+      final objectName =
+          _clueObjectNames[directionalObjectRelation.group(3)!.toLowerCase()];
+      if (objectName != null) {
+        if (personCell == null) return false;
+        final personRow = personCell ~/ level.gridSize;
+        final personColumn = personCell % level.gridSize;
+        final direction = directionalObjectRelation.group(2)!.toLowerCase();
+        final matchesDirection = objects.entries.any((entry) {
+          if (entry.value.name != objectName ||
+              layout.roomAt(entry.key) != layout.roomAt(personCell)) {
+            return false;
+          }
+          final objectRow = entry.key ~/ level.gridSize;
+          final objectColumn = entry.key % level.gridSize;
+          return switch (direction) {
+            'east' => personColumn > objectColumn,
+            'west' => personColumn < objectColumn,
+            'north' => personRow < objectRow,
+            _ => personRow > objectRow,
+          };
+        });
+        if (!matchesDirection) return false;
       }
     }
     final match = RegExp(
@@ -2371,7 +2480,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
                   onPressed: () => showRulesDialog(context),
                   tooltip: 'Game rules',
                   icon: const Icon(Icons.info_outline_rounded),
-                  color: brickDark,
+                  color: appForeground(context),
                 ),
                 const SizedBox(width: 4),
                 Expanded(
@@ -2383,7 +2492,7 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
                         : notesMode
                         ? 'Tap cells to add or remove a candidate note for $activeSuspect.'
                         : 'Tap an open cell to place $activeSuspect.',
-                    style: const TextStyle(color: ink),
+                    style: TextStyle(color: appForeground(context)),
                   ),
                 ),
               ],
@@ -2418,6 +2527,7 @@ class _Grid extends StatelessWidget {
   final Set<int> manualXs;
   @override
   Widget build(BuildContext context) {
+    final foreground = appForeground(context);
     final roomLayout = layoutFor(level);
     final roomNames = roomLayout.rooms.keys.toList();
     int roomWidth(String room) {
@@ -2431,15 +2541,20 @@ class _Grid extends StatelessWidget {
 
     Widget roomLabel(String room, TextAlign alignment) => Flexible(
       flex: roomWidth(room),
-      child: Text(
-        room,
-        textAlign: alignment,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-        style: const TextStyle(
-          color: Colors.black,
-          fontSize: 14,
-          fontWeight: FontWeight.w900,
+      child: Align(
+        alignment: alignment == TextAlign.right
+            ? Alignment.centerRight
+            : Alignment.centerLeft,
+        child: Text(
+          room,
+          textAlign: alignment,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: foreground,
+            fontSize: 14,
+            fontWeight: FontWeight.w900,
+          ),
         ),
       ),
     );
@@ -2449,7 +2564,7 @@ class _Grid extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           roomLabel(rooms[0], TextAlign.left),
-          roomLabel(rooms[1], TextAlign.left),
+          roomLabel(rooms[1], TextAlign.right),
         ],
       ),
     );
@@ -2458,11 +2573,11 @@ class _Grid extends StatelessWidget {
       children: [
         Text(
           level.location.toUpperCase(),
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w900,
             letterSpacing: 2,
-            color: brickDark,
+            color: foreground,
           ),
         ),
         const SizedBox(height: 8),
@@ -2470,7 +2585,7 @@ class _Grid extends StatelessWidget {
           level.name,
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
             fontWeight: FontWeight.w900,
-            color: ink,
+            color: foreground,
           ),
         ),
         const SizedBox(height: 20),
@@ -2559,13 +2674,29 @@ class _Grid extends StatelessWidget {
                                   : notesMode && activeSuspect != null
                                   ? const Color(0xFFF1E2E4)
                                   : xMode
-                                  ? const Color(0xFFE7EFEB)
+                                  ? const Color(0xFFE7F3FA)
                                   : paper,
                               borderRadius: BorderRadius.zero,
                               border: border,
                             ),
                             child: Stack(
                               children: [
+                                if (object != null &&
+                                    object.occupiable &&
+                                    notesMode)
+                                  Positioned.fill(
+                                    child: IgnorePointer(
+                                      child: Center(
+                                        child: Icon(
+                                          object.icon,
+                                          color: brickDark.withValues(
+                                            alpha: .18,
+                                          ),
+                                          size: 38,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 Center(
                                   child: name != null
                                       ? Stack(
@@ -2754,6 +2885,9 @@ class _Clues extends StatelessWidget {
   final ValueChanged<String> onMurdererChanged;
   @override
   Widget build(BuildContext context) {
+    final dark = isDarkMode(context);
+    final foreground = appForeground(context);
+    final surface = appSurface(context);
     final guideObjects = objectsFor(level).values.toSet().toList();
     final sortedClues = [...level.clues]
       ..sort((a, b) {
@@ -2811,7 +2945,7 @@ class _Clues extends StatelessWidget {
           style: Theme.of(context).textTheme.labelLarge?.copyWith(
             fontWeight: FontWeight.w900,
             letterSpacing: 1.4,
-            color: ink,
+            color: foreground,
           ),
         ),
         const SizedBox(height: 9),
@@ -2819,7 +2953,7 @@ class _Clues extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: const Color(0xFFE7EFEB),
+            color: const Color(0xFFE7F3FA),
             borderRadius: BorderRadius.circular(14),
           ),
           child: Column(
@@ -2842,7 +2976,7 @@ class _Clues extends StatelessWidget {
           style: Theme.of(context).textTheme.labelLarge?.copyWith(
             fontWeight: FontWeight.w900,
             letterSpacing: 1.5,
-            color: ink,
+            color: foreground,
           ),
         ),
         const SizedBox(height: 11),
@@ -2859,7 +2993,7 @@ class _Clues extends StatelessWidget {
                       ? const Icon(Icons.check, size: 15)
                       : null,
                   selectedColor: coral,
-                  backgroundColor: Colors.white,
+                  backgroundColor: surface,
                   side: const BorderSide(color: mauve),
                 ),
               )
@@ -2871,7 +3005,7 @@ class _Clues extends StatelessWidget {
           style: Theme.of(context).textTheme.labelLarge?.copyWith(
             fontWeight: FontWeight.w900,
             letterSpacing: 1.4,
-            color: ink,
+            color: foreground,
           ),
         ),
         const SizedBox(height: 9),
@@ -2885,7 +3019,7 @@ class _Clues extends StatelessWidget {
                   selected: selectedMurderer == name,
                   onSelected: (_) => onMurdererChanged(name),
                   selectedColor: coral,
-                  backgroundColor: Colors.white,
+                  backgroundColor: surface,
                   side: const BorderSide(color: mauve),
                 ),
               )
@@ -2897,7 +3031,7 @@ class _Clues extends StatelessWidget {
           style: Theme.of(context).textTheme.labelLarge?.copyWith(
             fontWeight: FontWeight.w900,
             letterSpacing: 1.4,
-            color: ink,
+            color: foreground,
           ),
         ),
         const SizedBox(height: 9),
@@ -2930,20 +3064,21 @@ class _Clues extends StatelessWidget {
           style: ButtonStyle(
             backgroundColor: WidgetStateProperty.resolveWith(
               (states) =>
-                  states.contains(WidgetState.selected) ? coral : Colors.white,
+                  states.contains(WidgetState.selected) ? coral : surface,
             ),
             foregroundColor: WidgetStateProperty.resolveWith(
-              (states) => states.contains(WidgetState.selected) ? ink : mauve,
+              (states) =>
+                  states.contains(WidgetState.selected) ? ink : foreground,
             ),
           ),
         ),
         const SizedBox(height: 18),
         Row(
           children: [
-            const Icon(
+            Icon(
               Icons.lightbulb_outline_rounded,
               size: 18,
-              color: brickDark,
+              color: dark ? const Color(0xFF9FC4FF) : brickDark,
             ),
             const SizedBox(width: 7),
             Text(
@@ -2951,7 +3086,7 @@ class _Clues extends StatelessWidget {
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 fontWeight: FontWeight.w900,
                 letterSpacing: 1.4,
-                color: brickDark,
+                color: dark ? const Color(0xFF9FC4FF) : brickDark,
               ),
             ),
           ],
@@ -2965,7 +3100,7 @@ class _Clues extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
                 color: entry.key.isEven
-                    ? const Color(0xFFE7EFEB)
+                    ? const Color(0xFFE7F3FA)
                     : const Color(0xFFF1E2E4),
                 borderRadius: BorderRadius.circular(12),
               ),

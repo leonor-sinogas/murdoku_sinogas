@@ -13,13 +13,14 @@ This repository currently contains the local-first Flutter MVP:
 - Manual X-mark mode, undo with note restoration, and a confirmed clear/restart control.
 - All clues visible together in the case panel.
 - Named room divisions with thick room borders and room labels on each board.
-- Room labels are outside the grid, aligned with their corresponding room sections; no room name occupies a puzzle cell.
+- Room labels are outside the grid: left rooms anchor to the board's left edge and right rooms anchor to the board's right edge; no room name occupies a puzzle cell.
 - Object cells for chairs, beds, tables, plants, windows, televisions, bookshelves, statues, boxes, and fireplaces, with an occupancy legend.
 - Local accusation submission with celebration feedback for correct answers and guidance after incorrect accusations.
 - Rules available from the home screen and from the info button in the bottom-left footer of an open case.
 - Search/magnifying-glass browser favicon using the Murdoku palette.
 - Puzzle 1 omits Arianna's redundant row clue because the television relationship already determines her row while preserving a unique solution.
-- A top-right theme selector supports Light, Dark, and System appearance modes across the app.
+- Cases 11–30 use varied object-led clue sets. They avoid a direct row-and-column pair for any character and are exhaustively tested for one suspect placement.
+- A top-right theme selector supports Light, Dark, and System appearance modes across the app. The light UI uses light-blue board accents; home case cards are navy with pink numbered badges.
 
 The requested FastAPI backend, authentication, PostgreSQL service, AWS infrastructure, persistent accounts, and production deployment are documented as the next architecture phase but are not implemented or deployed yet.
 
